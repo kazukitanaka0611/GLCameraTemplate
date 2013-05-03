@@ -12,6 +12,7 @@
 
 #import "OpenGLView.h"
 #import "AVCaptureCamera.h"
+#import "PhotoPrevieViewController.h"
 
 @interface GLCameraTemplateViewController ()
 
@@ -72,7 +73,11 @@
 {
     AudioServicesPlaySystemSound(1108);
 
-    UIImageWriteToSavedPhotosAlbum([self.glView convertUIImage], self, nil, nil);
+    UIImage *saveImage = [self.glView convertUIImage];
+    UIImageWriteToSavedPhotosAlbum(saveImage, self, nil, nil);
+
+    PhotoPrevieViewController *controller = [[PhotoPrevieViewController alloc]initWithImage:saveImage];
+    [self presentViewController:controller animated:YES completion:NULL];
 }
 
 @end

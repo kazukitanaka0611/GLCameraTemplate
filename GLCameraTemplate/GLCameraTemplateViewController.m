@@ -8,6 +8,8 @@
 
 #import "GLCameraTemplateViewController.h"
 
+#import <AudioToolbox/AudioToolbox.h>
+
 #import "OpenGLView.h"
 #import "AVCaptureCamera.h"
 
@@ -15,6 +17,7 @@
 
 @property (nonatomic, strong) OpenGLView *glView;
 @property (nonatomic, strong) AVCaptureCamera *camera;
+
 @end
 
 @implementation GLCameraTemplateViewController
@@ -39,7 +42,17 @@
     // OpenGL View
     self.glView = [[OpenGLView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.glView];
-    
+
+    // UIToolbar
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44,
+                                                                     self.view.frame.size.width, 44)];
+    [self.view addSubview:toolbar];
+
+    // Shutter Button
+    UIBarButtonItem *shutterButtonItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCamera
+                                                                                      target:self
+                                                                                      action:@selector(shutterButtonItemClick:)];
+    toolbar.items = @[ shutterButtonItem ];
 }
 
 - (void)didReceiveMemoryWarning
@@ -52,6 +65,14 @@
 - (void)processCameraFrame:(CVImageBufferRef)cameraFream
 {
     [self.glView drawFrame:cameraFream];
+}
+
+#pragma - mark
+- (void)shutterButtonItemClick:(UIBarButtonItem *)barButtonItem
+{
+    AudioServicesPlaySystemSound(1108);
+
+    UIImageWriteToSavedPhotosAlbum([self.glView convertUIImage], self, nil, nil);
 }
 
 @end

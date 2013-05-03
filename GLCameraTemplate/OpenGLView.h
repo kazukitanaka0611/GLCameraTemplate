@@ -15,5 +15,6 @@
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
 - (BOOL)drawFrame:(CVImageBufferRef)cameraFrame;
+- (UIImage *)convertUIImage;
 
 @end

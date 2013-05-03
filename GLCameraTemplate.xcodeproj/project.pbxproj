@@ -24,6 +24,7 @@
 		2F41072C1730725000002BB2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F41072B1730725000002BB2 /* QuartzCore.framework */; };
 		2F41072F1730733A00002BB2 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F41072E1730733A00002BB2 /* OpenGLView.m */; };
 		2F618C581733A519002F3903 /* AVCaptureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F618C571733A519002F3903 /* AVCaptureCamera.m */; };
+		2FB4203C1733D66E009C4026 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB4203B1733D66E009C4026 /* AudioToolbox.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -51,6 +52,7 @@
 		2F41072E1730733A00002BB2 /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
 		2F618C561733A519002F3903 /* AVCaptureCamera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AVCaptureCamera.h; sourceTree = "<group>"; };
 		2F618C571733A519002F3903 /* AVCaptureCamera.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AVCaptureCamera.m; sourceTree = "<group>"; };
+		2FB4203B1733D66E009C4026 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2FB4203C1733D66E009C4026 /* AudioToolbox.framework in Frameworks */,
 				2F41072C1730725000002BB2 /* QuartzCore.framework in Frameworks */,
 				2F41072A1730724B00002BB2 /* CoreVideo.framework in Frameworks */,
 				2F4107281730724500002BB2 /* CoreMedia.framework in Frameworks */,
@@ -92,6 +95,7 @@
 		2F410702173071C300002BB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2FB4203B1733D66E009C4026 /* AudioToolbox.framework */,
 				2F41072B1730725000002BB2 /* QuartzCore.framework */,
 				2F4107291730724B00002BB2 /* CoreVideo.framework */,
 				2F4107271730724500002BB2 /* CoreMedia.framework */,

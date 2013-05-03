@@ -9,6 +9,7 @@
 #import "GLCameraTemplateViewController.h"
 
 #import <AudioToolbox/AudioToolbox.h>
+#import <AssetsLibrary/AssetsLibrary.h>
 
 #import "OpenGLView.h"
 #import "AVCaptureCamera.h"
@@ -73,11 +74,16 @@
 {
     AudioServicesPlaySystemSound(1108);
 
-    UIImage *saveImage = [self.glView convertUIImage];
-    UIImageWriteToSavedPhotosAlbum(saveImage, self, nil, nil);
+    __block UIImage *saveImage = [self.glView convertUIImage];
 
-    PhotoPrevieViewController *controller = [[PhotoPrevieViewController alloc]initWithImage:saveImage];
-    [self presentViewController:controller animated:YES completion:NULL];
+    ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+    [library writeImageToSavedPhotosAlbum:saveImage.CGImage
+                               orientation:(ALAssetOrientation)saveImage.imageOrientation
+                           completionBlock:^(NSURL *assetURL, NSError *error){
+
+                               PhotoPrevieViewController *controller = [[PhotoPrevieViewController alloc]initWithImage:saveImage];
+                               [self presentViewController:controller animated:YES completion:NULL];
+                           }];
 }
 
 @end

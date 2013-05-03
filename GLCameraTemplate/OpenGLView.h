@@ -14,4 +14,6 @@
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
+- (BOOL)drawFrame:(CVImageBufferRef)cameraFrame;
+
 @end

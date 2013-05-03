@@ -36,7 +36,7 @@
         eaglLayer.drawableProperties = @{
                                          kEAGLDrawablePropertyRetainedBacking : @ (YES),
                                          kEAGLDrawablePropertyColorFormat : kEAGLColorFormatRGBA8
-                                         };
+                                        };
         self.context = [[EAGLContext alloc] initWithAPI:kEAGLRenderingAPIOpenGLES2];
 
         if (!self.context
@@ -225,64 +225,75 @@
     return YES;
 }
 
-- (void)drawFrame:(CVImageBufferRef)cameraFrame
+- (BOOL)drawFrame:(CVImageBufferRef)cameraFrame
 {
-    int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
-    int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
+    BOOL success = FALSE;
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0,
-                 GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
+    if (self.context)
+    {
+        CVPixelBufferLockBaseAddress(cameraFrame, 0);
 
-    static const GLfloat squareVetrices[] = {
-        -1.0f, -1.0f,
-         1.0f, -1.0f,
-        -1.0f,  1.0f,
-         1.0f,  1.0f,
-    };
+        int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
+        int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
 
-    static const GLfloat textureVertices[] = {
-         1.0f,  1.0f,
-         1.0f,  0.0f,
-         0.0f,  1.0f,
-         0.0f,  0.0f
-    };
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0,
+                     GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
 
-    glViewport(0, 0, self.frame.size.width, self.frame.size.height);
+        static const GLfloat squareVetrices[] = {
+            -1.0f, -1.0f,
+             1.0f, -1.0f,
+            -1.0f,  1.0f,
+             1.0f,  1.0f,
+        };
 
-    glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVetrices);
-    glEnableVertexAttribArray(0);
+        static const GLfloat textureVertices[] = {
+             1.0f,  1.0f,
+             1.0f,  0.0f,
+             0.0f,  1.0f,
+             0.0f,  0.0f
+        };
 
-    glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices);
-    glEnableVertexAttribArray(1);
+        glViewport(0, 0, self.frame.size.width, self.frame.size.height);
 
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+        glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVetrices);
+        glEnableVertexAttribArray(0);
 
-    [self.context presentRenderbuffer:GL_RENDERBUFFER];
+        glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices);
+        glEnableVertexAttribArray(1);
+
+        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+        success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
+
+         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    }
+
+    return success;
 }
 
 - (UIImage *)convertUIImage
 {
     int width = 0;
-    int hgith = 0;
+    int hegith = 0;
 
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &hgith);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &hegith);
 
-    NSInteger myDateLength = width * hgith * 4;
+    NSInteger myDateLength = width * hegith * 4;
     GLubyte *buffer = (GLubyte *)malloc(myDateLength);
-    glReadPixels(0, 0, width, hgith, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glReadPixels(0, 0, width, hegith, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
     GLubyte *buffer2 = (GLubyte *)malloc(myDateLength);
-    for (int y = 0; y < hgith; y++)
+    for (int y = 0; y < hegith; y++)
     {
-        memcpy(&buffer2[((hgith -1) -y) * width *4], &buffer[y * 4 * width], sizeof(GLubyte) * width *4);
+        memcpy(&buffer2[((hegith -1) -y) * width *4], &buffer[y * 4 * width], sizeof(GLubyte) * width *4);
     }
     free(buffer);
 
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer2, myDateLength, bufferFree);
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
     CGImageRef cgImage = CGImageCreate(width,
-                                       hgith,
+                                       hegith,
                                        8,
                                        32,
                                        4 * width,

@@ -13,16 +13,19 @@
 @interface AVCaptureCamera()
     <AVCaptureVideoDataOutputSampleBufferDelegate>
 
+@property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
 @property (nonatomic ,strong) AVCaptureSession *captureSession;
 
 @end
 
 @implementation AVCaptureCamera
 
-- (id)init
+- (id)initWithDelelgate:(id)aDelegate
 {
     if (self = [super init])
     {
+        self.delegate = aDelegate;
+        
         self.captureSession = [[AVCaptureSession alloc] init];
 
         AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:
@@ -45,6 +48,11 @@
         }
 
         [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+
+        if (![self.captureSession isRunning])
+        {
+            [self.captureSession startRunning];
+        }
     }
 
     return self;

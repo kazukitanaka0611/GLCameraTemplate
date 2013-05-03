@@ -16,6 +16,6 @@
 
 @interface AVCaptureCamera : NSObject
 
-@property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
+- (id)initWithDelelgate:(id)aDelegate;
 
 @end

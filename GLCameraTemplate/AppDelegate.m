@@ -8,12 +8,18 @@
 
 #import "AppDelegate.h"
 
+#import "GLCameraTemplateViewController.h"
+
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     // Override point for customization after application launch.
+
+    GLCameraTemplateViewController *controller = [[GLCameraTemplateViewController alloc] init];
+    self.window.rootViewController = controller;
+    
     self.window.backgroundColor = [UIColor whiteColor];
     [self.window makeKeyAndVisible];
     return YES;

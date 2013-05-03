@@ -16,6 +16,13 @@
 		2F410716173071C300002BB2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410715173071C300002BB2 /* Default.png */; };
 		2F410718173071C300002BB2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410717173071C300002BB2 /* Default@2x.png */; };
 		2F41071A173071C300002BB2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410719173071C300002BB2 /* Default-568h@2x.png */; };
+		2F410722173071E000002BB2 /* GLCameraTemplateViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F410721173071E000002BB2 /* GLCameraTemplateViewController.m */; };
+		2F4107241730723B00002BB2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107231730723B00002BB2 /* OpenGLES.framework */; };
+		2F4107261730723F00002BB2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107251730723F00002BB2 /* AVFoundation.framework */; };
+		2F4107281730724500002BB2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107271730724500002BB2 /* CoreMedia.framework */; };
+		2F41072A1730724B00002BB2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107291730724B00002BB2 /* CoreVideo.framework */; };
+		2F41072C1730725000002BB2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F41072B1730725000002BB2 /* QuartzCore.framework */; };
+		2F41072F1730733A00002BB2 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F41072E1730733A00002BB2 /* OpenGLView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +39,15 @@
 		2F410715173071C300002BB2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		2F410717173071C300002BB2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		2F410719173071C300002BB2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		2F410720173071E000002BB2 /* GLCameraTemplateViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLCameraTemplateViewController.h; sourceTree = "<group>"; };
+		2F410721173071E000002BB2 /* GLCameraTemplateViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLCameraTemplateViewController.m; sourceTree = "<group>"; };
+		2F4107231730723B00002BB2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		2F4107251730723F00002BB2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		2F4107271730724500002BB2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		2F4107291730724B00002BB2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		2F41072B1730725000002BB2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		2F41072D1730733A00002BB2 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
+		2F41072E1730733A00002BB2 /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +55,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2F41072C1730725000002BB2 /* QuartzCore.framework in Frameworks */,
+				2F41072A1730724B00002BB2 /* CoreVideo.framework in Frameworks */,
+				2F4107281730724500002BB2 /* CoreMedia.framework in Frameworks */,
+				2F4107261730723F00002BB2 /* AVFoundation.framework in Frameworks */,
+				2F4107241730723B00002BB2 /* OpenGLES.framework in Frameworks */,
 				2F410704173071C300002BB2 /* UIKit.framework in Frameworks */,
 				2F410706173071C300002BB2 /* Foundation.framework in Frameworks */,
 				2F410708173071C300002BB2 /* CoreGraphics.framework in Frameworks */,
@@ -68,6 +89,11 @@
 		2F410702173071C300002BB2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				2F41072B1730725000002BB2 /* QuartzCore.framework */,
+				2F4107291730724B00002BB2 /* CoreVideo.framework */,
+				2F4107271730724500002BB2 /* CoreMedia.framework */,
+				2F4107251730723F00002BB2 /* AVFoundation.framework */,
+				2F4107231730723B00002BB2 /* OpenGLES.framework */,
 				2F410703173071C300002BB2 /* UIKit.framework */,
 				2F410705173071C300002BB2 /* Foundation.framework */,
 				2F410707173071C300002BB2 /* CoreGraphics.framework */,
@@ -80,6 +106,10 @@
 			children = (
 				2F410712173071C300002BB2 /* AppDelegate.h */,
 				2F410713173071C300002BB2 /* AppDelegate.m */,
+				2F410720173071E000002BB2 /* GLCameraTemplateViewController.h */,
+				2F410721173071E000002BB2 /* GLCameraTemplateViewController.m */,
+				2F41072D1730733A00002BB2 /* OpenGLView.h */,
+				2F41072E1730733A00002BB2 /* OpenGLView.m */,
 				2F41070A173071C300002BB2 /* Supporting Files */,
 			);
 			path = GLCameraTemplate;
@@ -166,6 +196,8 @@
 			files = (
 				2F410710173071C300002BB2 /* main.m in Sources */,
 				2F410714173071C300002BB2 /* AppDelegate.m in Sources */,
+				2F410722173071E000002BB2 /* GLCameraTemplateViewController.m in Sources */,
+				2F41072F1730733A00002BB2 /* OpenGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,7 +240,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -232,7 +264,7 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;

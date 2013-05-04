@@ -83,7 +83,7 @@
 
     if (self.videoRecorder.isRecording)
     {
-        [self.videoRecorder writeSampleAtTime:CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer) pixelBuffer:cameraFrame];
+        [self.videoRecorder writeSampleAtTime:CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)];
     }
 
     [self.glView drawFrame:cameraFrame];

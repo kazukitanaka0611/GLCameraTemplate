@@ -17,6 +17,11 @@
 @property (nonatomic, strong) AVAssetWriterInput *assertWriterInput;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *adaptor;
 
+@property (nonatomic, assign) GLubyte *rawImageData;
+@property (nonatomic, assign) unsigned scaledWidth;
+@property (nonatomic, assign) unsigned scaledHeight;
+@property (nonatomic, assign) unsigned bufferRowBytes;
+
 @end
 
 @implementation VideoRecorder
@@ -75,6 +80,13 @@
     // Start Writing
     [self.assertWriter startWriting];
 
+    NSInteger dataLength = ((frame.size.width *frameScale)*(frame.size.height * frameScale*frameScale))*4;
+    _rawImageData = valloc(dataLength * sizeof(GLubyte));
+
+    _scaledWidth = frame.size.width * frameScale;
+    _scaledHeight = frame.size.height * frameScale;
+    _bufferRowBytes = (_scaledWidth * 4 + 63) & ~63;
+    
     // Recoding
     _isRecording = YES;
     self.isFirstFrame = YES;
@@ -98,12 +110,15 @@
 #endif
 
     _isRecording = NO;
+
+    free(_rawImageData);
+    _rawImageData = nil;
     
     return self.movieURL;
 }
 
 #pragma - mark
-- (void)writeSampleAtTime:(CMTime)presentationTime pixelBuffer:(CVPixelBufferRef) pixelBuffer
+- (void)writeSampleAtTime:(CMTime)presentationTime
 {
     if (self.assertWriterInput.readyForMoreMediaData)
     {
@@ -114,23 +129,40 @@
             self.isFirstFrame = NO;
         }
 
-//        CVPixelBufferRef pixelBuffer = NULL;
-//        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
+        glReadPixels(0, 0, _scaledWidth, _scaledHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
+        
+        CVPixelBufferRef pixelBuffer = NULL;
+        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
 
-//        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-//
-//        if (cvErr != kCVReturnSuccess)
-//        {
-//            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-//            CVBufferRelease(pixelBuffer);
-//            exit(1);
-//        }
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+
+        if (cvErr != kCVReturnSuccess)
+        {
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+            CVBufferRelease(pixelBuffer);
+            exit(1);
+        }
+
+        unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
+        unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
+
+        unsigned char* src;
+        unsigned char* dst;
+
+        for(unsigned int i = 0; i < _scaledHeight; ++i) {
+
+            src = _rawImageData + _bufferRowBytes * i;
+
+            dst = baseAddress + rowbytes * (_scaledHeight - 1 - i);
+
+            memmove(dst, src, _scaledWidth * 4);
+        }
 
         // Append
         BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
 
-//        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-//        CVBufferRelease(pixelBuffer);
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVBufferRelease(pixelBuffer);
 
         if (!append)
         {

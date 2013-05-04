@@ -231,8 +231,6 @@
 
     if (self.context)
     {
-        CVPixelBufferLockBaseAddress(cameraFrame, 0);
-
         int bufferWidth = CVPixelBufferGetWidth(cameraFrame);
         int bufferHeight = CVPixelBufferGetHeight(cameraFrame);
 
@@ -264,8 +262,6 @@
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
         success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
-
-         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     }
 
     return success;

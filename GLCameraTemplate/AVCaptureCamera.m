@@ -8,8 +8,6 @@
 
 #import "AVCaptureCamera.h"
 
-#import <AVFoundation/AVFoundation.h>
-
 @interface AVCaptureCamera()
     <AVCaptureVideoDataOutputSampleBufferDelegate>
 
@@ -20,6 +18,7 @@
 
 @implementation AVCaptureCamera
 
+#pragma - mark
 - (id)initWithDelelgate:(id)aDelegate
 {
     if (self = [super init])
@@ -58,13 +57,12 @@
     return self;
 }
 
+#pragma - mark
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    CVImageBufferRef pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-    [self.delegate processCameraFrame:pixelBuffer];
+    [self.delegate processCameraFrame:sampleBuffer];
 }
 
 @end

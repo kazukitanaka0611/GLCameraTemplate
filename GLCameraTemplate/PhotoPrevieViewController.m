@@ -68,11 +68,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma - mark
 - (void)backButtonItemClick:(UIBarButtonItem *)barButtonItem
 {
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
+#pragma - mark
 - (void)resizeImage:(UIImage *)aOriginalImage imageView:(UIImageView *)aImageView
 {
     float aspect = aOriginalImage.size.height / aOriginalImage.size.width;

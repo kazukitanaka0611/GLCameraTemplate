@@ -8,9 +8,11 @@
 
 #import <Foundation/Foundation.h>
 
+#import <AVFoundation/AVFoundation.h>
+
 @protocol AVCaptureCameraDelegate <NSObject>
 
-- (void)processCameraFrame:(CVImageBufferRef)cameraFream;
+- (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer;
 
 @end
 

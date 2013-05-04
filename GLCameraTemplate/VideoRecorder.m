@@ -46,10 +46,6 @@
                                                      error:nil];
     // AssertWriterInput
     CGFloat frameScale = 1.0f;
-    if ([[UIScreen mainScreen] scale] == 2.0)
-    {
-        frameScale = 1.2;
-    }
     
     NSDictionary *assertWriterInputSetting = @{
                                                 AVVideoCodecKey : AVVideoCodecH264,

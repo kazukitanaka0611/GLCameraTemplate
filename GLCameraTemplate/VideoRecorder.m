@@ -103,7 +103,7 @@
 }
 
 #pragma - mark
-- (void)writeSampleAtTime:(CMTime)presentationTime
+- (void)writeSampleAtTime:(CMTime)presentationTime pixelBuffer:(CVPixelBufferRef) pixelBuffer
 {
     if (self.assertWriterInput.readyForMoreMediaData)
     {
@@ -114,23 +114,23 @@
             self.isFirstFrame = NO;
         }
 
-        CVPixelBufferRef pixelBuffer = NULL;
-        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
+//        CVPixelBufferRef pixelBuffer = NULL;
+//        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
 
-        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
-
-        if (cvErr != kCVReturnSuccess)
-        {
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-            CVBufferRelease(pixelBuffer);
-            exit(1);
-        }
+//        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+//
+//        if (cvErr != kCVReturnSuccess)
+//        {
+//            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+//            CVBufferRelease(pixelBuffer);
+//            exit(1);
+//        }
 
         // Append
         BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
 
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-        CVBufferRelease(pixelBuffer);
+//        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+//        CVBufferRelease(pixelBuffer);
 
         if (!append)
         {

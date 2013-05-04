@@ -46,7 +46,7 @@
 
     // Video Recorder
     self.videoRecorder = [[VideoRecorder alloc] init];
-    
+
     // OpenGL View
     self.glView = [[OpenGLView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.glView];
@@ -80,14 +80,14 @@
     CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
 
     CVPixelBufferLockBaseAddress(cameraFrame, 0);
-    
-    [self.glView drawFrame:cameraFrame];
 
     if (self.videoRecorder.isRecording)
     {
-        [self.videoRecorder writeSampleAtTime:CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer)];
+        [self.videoRecorder writeSampleAtTime:CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer) pixelBuffer:cameraFrame];
     }
 
+    [self.glView drawFrame:cameraFrame];
+    
     CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
 }
 

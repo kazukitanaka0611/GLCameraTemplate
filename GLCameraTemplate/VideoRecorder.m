@@ -18,8 +18,7 @@
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *adaptor;
 
 @property (nonatomic, assign) GLubyte *rawImageData;
-@property (nonatomic, assign) unsigned scaledWidth;
-@property (nonatomic, assign) unsigned scaledHeight;
+
 @property (nonatomic, assign) unsigned bufferRowBytes;
 
 @end
@@ -45,12 +44,10 @@
                                                   fileType:AVFileTypeQuickTimeMovie
                                                      error:nil];
     // AssertWriterInput
-    CGFloat frameScale = 1.0f;
-    
     NSDictionary *assertWriterInputSetting = @{
                                                 AVVideoCodecKey : AVVideoCodecH264,
-                                                AVVideoWidthKey : @(frame.size.width * frameScale),
-                                                AVVideoHeightKey : @(frame.size.height * frameScale)
+                                                AVVideoWidthKey : @(frame.size.width),
+                                                AVVideoHeightKey : @(frame.size.height)
                                               };
     
     self.assertWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
@@ -65,9 +62,9 @@
     // AVAssetWriterInputPixelBufferAdaptor
     NSDictionary *pixelBufferAttributes = @{
                                                 (NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
-                                                (NSString *)kCVPixelBufferWidthKey : @(frame.size.width * frameScale),
-                                                (NSString *)kCVPixelBufferHeightKey : @(frame.size.height * frameScale),
-                                                (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @((frame.size.width * frameScale)*4)
+                                                (NSString *)kCVPixelBufferWidthKey : @(frame.size.width),
+                                                (NSString *)kCVPixelBufferHeightKey : @(frame.size.height),
+                                                (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @(frame.size.width * 4)
                                             };
     
     self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.assertWriterInput
@@ -76,12 +73,10 @@
     // Start Writing
     [self.assertWriter startWriting];
 
-    NSInteger dataLength = ((frame.size.width *frameScale)*(frame.size.height * frameScale*frameScale))*4;
+    NSInteger dataLength = (frame.size.width * frame.size.height) * 4;
     _rawImageData = valloc(dataLength * sizeof(GLubyte));
 
-    _scaledWidth = frame.size.width * frameScale;
-    _scaledHeight = frame.size.height * frameScale;
-    _bufferRowBytes = (_scaledWidth * 4 + 63) & ~63;
+    _bufferRowBytes = ((unsigned)frame.size.width * 4 + 63) & ~63;
     
     // Recoding
     _isRecording = YES;
@@ -114,7 +109,7 @@
 }
 
 #pragma - mark
-- (void)writeSampleAtTime:(CMTime)presentationTime
+- (void)writeSampleAtTime:(CMTime)presentationTime frame:(CGRect)frame
 {
     if (self.assertWriterInput.readyForMoreMediaData)
     {
@@ -125,7 +120,7 @@
             self.isFirstFrame = NO;
         }
 
-        glReadPixels(0, 0, _scaledWidth, _scaledHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
+        glReadPixels(0, 0, frame.size.width, frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
         
         CVPixelBufferRef pixelBuffer = NULL;
         CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
@@ -145,13 +140,13 @@
         unsigned char* src;
         unsigned char* dst;
 
-        for(unsigned int i = 0; i < _scaledHeight; ++i) {
+        for(unsigned int i = 0; i < frame.size.height; ++i) {
 
             src = _rawImageData + _bufferRowBytes * i;
 
-            dst = baseAddress + rowbytes * (_scaledHeight - 1 - i);
+            dst = baseAddress + rowbytes * ((unsigned)frame.size.height - 1 - i);
 
-            memmove(dst, src, _scaledWidth * 4);
+            memmove(dst, src, frame.size.width * 4);
         }
 
         // Append

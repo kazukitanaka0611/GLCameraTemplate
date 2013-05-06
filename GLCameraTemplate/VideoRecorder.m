@@ -14,7 +14,8 @@
 @property (nonatomic, strong) NSURL *movieURL;
 
 @property (nonatomic, strong) AVAssetWriter *assertWriter;
-@property (nonatomic, strong) AVAssetWriterInput *assertWriterInput;
+@property (nonatomic, strong) AVAssetWriterInput *audioInput;
+@property (nonatomic, strong) AVAssetWriterInput *videoInput;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *adaptor;
 
 @property (nonatomic, assign) GLubyte *rawImageData;
@@ -43,20 +44,43 @@
     self.assertWriter = [[AVAssetWriter alloc] initWithURL:self.movieURL
                                                   fileType:AVFileTypeQuickTimeMovie
                                                      error:nil];
-    // AssertWriterInput
-    NSDictionary *assertWriterInputSetting = @{
-                                                AVVideoCodecKey : AVVideoCodecH264,
-                                                AVVideoWidthKey : @(frame.size.width),
-                                                AVVideoHeightKey : @(frame.size.height)
-                                              };
-    
-    self.assertWriterInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                outputSettings:assertWriterInputSetting];
-    self.assertWriterInput.expectsMediaDataInRealTime = NO;
+    // Audio Input
+    CGFloat preferredHardwareSampleRate = [[AVAudioSession sharedInstance] currentHardwareSampleRate];
 
-    if ([self.assertWriter canAddInput:self.assertWriterInput])
+    AudioChannelLayout acl;
+    bzero(&acl, sizeof(acl));
+    acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
+
+    NSDictionary *audioInputSetting = @{
+                                        AVFormatIDKey : @(kAudioFormatMPEG4AAC),
+                                        AVNumberOfChannelsKey : @(1),
+                                        AVSampleRateKey : @(preferredHardwareSampleRate),
+                                        AVChannelLayoutKey : [NSData dataWithBytes:&acl length:sizeof(acl)],
+                                        AVEncoderBitRateKey : @(64000)
+                                      };
+    
+    self.audioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio
+                                                         outputSettings:audioInputSetting];
+
+    if ([self.assertWriter canAddInput:self.audioInput])
     {
-        [self.assertWriter addInput:self.assertWriterInput];
+        //[self.assertWriter addInput:self.audioInput];
+    }
+    
+    // Video Input
+    NSDictionary *videoInputSetting = @{
+                                        AVVideoCodecKey : AVVideoCodecH264,
+                                        AVVideoWidthKey : @(frame.size.width),
+                                        AVVideoHeightKey : @(frame.size.height)
+                                      };
+
+    self.videoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+                                                                outputSettings:videoInputSetting];
+    self.videoInput.expectsMediaDataInRealTime = NO;
+
+    if ([self.assertWriter canAddInput:self.videoInput])
+    {
+        [self.assertWriter addInput:self.videoInput];
     }
 
     // AVAssetWriterInputPixelBufferAdaptor
@@ -67,7 +91,7 @@
                                                 (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @(frame.size.width * 4)
                                             };
     
-    self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.assertWriterInput
+    self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.videoInput
                                                               sourcePixelBufferAttributes:pixelBufferAttributes];
 
     // Start Writing
@@ -86,17 +110,22 @@
 #pragma - mark
 - (NSURL *)stopRecording
 {
+//    [self.audioInput markAsFinished];
+    [self.videoInput markAsFinished];
+    
 #if __IPHONE_OS_VERSION_MIN_REQUIRED <= 60000
     [self.assertWriter finishWritingWithCompletionHandler:^{
 
         self.assertWriter = nil;
-        self.assertWriterInput = nil;
+        self.audioInput = nil;
+        self.videoInput = nil;
         self.adaptor = nil;
     }];
 #else
     [self.assertWriter finishWriting];
     self.assertWriter = nil;
-    self.assertWriterInput = nil;
+    self.audioInput = nil;
+    self.videoInput = nil;
     self.adaptor = nil;
 #endif
 
@@ -111,53 +140,56 @@
 #pragma - mark
 - (void)writeSampleAtTime:(CMTime)presentationTime frame:(CGRect)frame
 {
-    if (self.assertWriterInput.readyForMoreMediaData)
+    if (self.assertWriter.status == AVAssetWriterStatusWriting)
     {
-        // Start
-        if (self.isFirstFrame)
+        if (self.videoInput.readyForMoreMediaData)
         {
-            [self.assertWriter startSessionAtSourceTime:presentationTime];
-            self.isFirstFrame = NO;
-        }
+            // Start
+            if (self.isFirstFrame)
+            {
+                [self.assertWriter startSessionAtSourceTime:presentationTime];
+                self.isFirstFrame = NO;
+            }
 
-        glReadPixels(0, 0, frame.size.width, frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
-        
-        CVPixelBufferRef pixelBuffer = NULL;
-        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
+            glReadPixels(0, 0, frame.size.width, frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
+            
+            CVPixelBufferRef pixelBuffer = NULL;
+            CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
 
-        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 
-        if (cvErr != kCVReturnSuccess)
-        {
+            if (cvErr != kCVReturnSuccess)
+            {
+                CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+                CVBufferRelease(pixelBuffer);
+                exit(1);
+            }
+
+            unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
+            unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
+
+            unsigned char* src;
+            unsigned char* dst;
+
+            for(unsigned int i = 0; i < frame.size.height; ++i) {
+
+                src = _rawImageData + _bufferRowBytes * i;
+
+                dst = baseAddress + rowbytes * ((unsigned)frame.size.height - 1 - i);
+
+                memmove(dst, src, frame.size.width * 4);
+            }
+
+            // Append
+            BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
+
             CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
             CVBufferRelease(pixelBuffer);
-            exit(1);
-        }
 
-        unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
-        unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
-
-        unsigned char* src;
-        unsigned char* dst;
-
-        for(unsigned int i = 0; i < frame.size.height; ++i) {
-
-            src = _rawImageData + _bufferRowBytes * i;
-
-            dst = baseAddress + rowbytes * ((unsigned)frame.size.height - 1 - i);
-
-            memmove(dst, src, frame.size.width * 4);
-        }
-
-        // Append
-        BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
-
-        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-        CVBufferRelease(pixelBuffer);
-
-        if (!append)
-        {
-            [self stopRecording];
+            if (!append)
+            {
+                [self stopRecording];
+            }
         }
     }
 }

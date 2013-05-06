@@ -13,7 +13,10 @@
      AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
+
 @property (nonatomic ,strong) AVCaptureSession *captureSession;
+@property (nonatomic, strong) AVCaptureVideoDataOutput *videoOutput;
+@property (nonatomic, strong) AVCaptureAudioDataOutput *audioOutput;
 
 @end
 
@@ -37,7 +40,20 @@
         {
             [self.captureSession addInput:audioInput];
         }
-        
+
+        // Audio Output
+        self.audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+
+        // Audio Captuer Queue
+        dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
+        [self.audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
+        dispatch_release(audioCaptureQueue);
+
+        if ([self.captureSession canAddOutput:self.audioOutput])
+        {
+            [self.captureSession addOutput:self.audioOutput];
+        }
+
         // Video Input
         AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:
                                             [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
@@ -47,20 +63,20 @@
         {
             [self.captureSession addInput:videoInput];
         }
-
+        
         // Video Output
-        AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
-        [videoOutput setAlwaysDiscardsLateVideoFrames:YES];
-        videoOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
+        self.videoOutput = [[AVCaptureVideoDataOutput alloc] init];
+        [self.videoOutput setAlwaysDiscardsLateVideoFrames:YES];
+        self.videoOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
 
         // Video Capture Queue
         dispatch_queue_t videoCaputerQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
-        [videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
+        [self.videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
         dispatch_release(videoCaputerQueue);
 
-        if ([self.captureSession canAddOutput:videoOutput])
+        if ([self.captureSession canAddOutput:self.videoOutput])
         {
-            [self.captureSession addOutput:videoOutput];
+            [self.captureSession addOutput:self.videoOutput];
         }
 
         [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
@@ -80,7 +96,16 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
     dispatch_sync(dispatch_get_main_queue(), ^{
-        [self.delegate processCameraFrame:sampleBuffer];
+
+        if(captureOutput == self.videoOutput)
+        {
+            [self.delegate processCameraFrame:sampleBuffer];
+        }
+
+        if (captureOutput == self.audioOutput)
+        {
+           
+        }
     });
 }
 

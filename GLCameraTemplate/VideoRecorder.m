@@ -86,7 +86,7 @@
 #pragma - mark
 - (NSURL *)stopRecording
 {
-#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
+#if __IPHONE_OS_VERSION_MIN_REQUIRED <= 60000
     [self.assertWriter finishWritingWithCompletionHandler:^{
 
         self.assertWriter = nil;

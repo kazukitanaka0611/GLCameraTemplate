@@ -9,7 +9,8 @@
 #import "AVCaptureCamera.h"
 
 @interface AVCaptureCamera()
-    <AVCaptureVideoDataOutputSampleBufferDelegate>
+    <AVCaptureVideoDataOutputSampleBufferDelegate,
+     AVCaptureAudioDataOutputSampleBufferDelegate>
 
 @property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
 @property (nonatomic ,strong) AVCaptureSession *captureSession;
@@ -27,19 +28,35 @@
         
         self.captureSession = [[AVCaptureSession alloc] init];
 
+        // Audio Input
+        AVCaptureDeviceInput *audioInput = [[AVCaptureDeviceInput alloc] initWithDevice:
+                                            [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio]
+                                                                                  error:nil];
+
+        if ([self.captureSession canAddInput:audioInput])
+        {
+            [self.captureSession addInput:audioInput];
+        }
+        
+        // Video Input
         AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:
                                             [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
-                                            error:nil];
+                                                                                  error:nil];
         
         if ([self.captureSession canAddInput:videoInput])
         {
             [self.captureSession addInput:videoInput];
         }
-        
+
+        // Video Output
         AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
         [videoOutput setAlwaysDiscardsLateVideoFrames:YES];
         videoOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
-        [videoOutput setSampleBufferDelegate:self queue:dispatch_get_main_queue()];
+
+        // Video Capture Queue
+        dispatch_queue_t videoCaputerQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
+        [videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
+        dispatch_release(videoCaputerQueue);
 
         if ([self.captureSession canAddOutput:videoOutput])
         {
@@ -62,7 +79,9 @@
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
-    [self.delegate processCameraFrame:sampleBuffer];
+    dispatch_sync(dispatch_get_main_queue(), ^{
+        [self.delegate processCameraFrame:sampleBuffer];
+    });
 }
 
 @end

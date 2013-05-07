@@ -138,7 +138,7 @@
 }
 
 #pragma - mark
-- (void)writeSampl:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame;
+- (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame
 {
     if (self.assertWriter.status == AVAssetWriterStatusWriting)
     {

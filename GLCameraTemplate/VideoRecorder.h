@@ -16,6 +16,6 @@
 
 - (void)startRecording:(CGRect)frame;
 - (NSURL *)stopRecording;
-- (void)writeSampl:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame;
+- (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame;
 
 @end

@@ -12,7 +12,7 @@
 
 @protocol AVCaptureCameraDelegate <NSObject>
 
-- (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer;
+- (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType;
 
 @end
 

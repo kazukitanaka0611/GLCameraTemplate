@@ -138,12 +138,13 @@
 }
 
 #pragma - mark
-- (void)writeSampleAtTime:(CMTime)presentationTime frame:(CGRect)frame
+- (void)writeSampl:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame;
 {
     if (self.assertWriter.status == AVAssetWriterStatusWriting)
     {
         if (self.videoInput.readyForMoreMediaData)
         {
+            CMTime presentationTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
             // Start
             if (self.isFirstFrame)
             {

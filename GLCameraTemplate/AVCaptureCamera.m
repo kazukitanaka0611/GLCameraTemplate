@@ -97,15 +97,19 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 {
     dispatch_sync(dispatch_get_main_queue(), ^{
 
+        NSString *mediaType;
         if(captureOutput == self.videoOutput)
         {
-            [self.delegate processCameraFrame:sampleBuffer];
+            mediaType = AVMediaTypeVideo;
         }
 
         if (captureOutput == self.audioOutput)
         {
-           
+            mediaType = AVMediaTypeAudio;
         }
+
+        [self.delegate processCameraFrame:sampleBuffer mediaType:mediaType];
+
     });
 }
 

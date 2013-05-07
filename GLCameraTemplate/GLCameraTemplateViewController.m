@@ -75,20 +75,23 @@
 }
 
 #pragma - mark
-- (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer
+- (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType
 {
-    CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-    CVPixelBufferLockBaseAddress(cameraFrame, 0);
-
-    if (self.videoRecorder.isRecording)
+    if (mediaType == AVMediaTypeVideo)
     {
-        [self.videoRecorder writeSampleAtTime:CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer) frame:self.glView.bounds];
-    }
+        CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
 
-    [self.glView drawFrame:cameraFrame];
-    
-    CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+        CVPixelBufferLockBaseAddress(cameraFrame, 0);
+
+        if (self.videoRecorder.isRecording)
+        {
+            [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds];
+        }
+
+        [self.glView drawFrame:cameraFrame];
+
+        CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    }
 }
 
 #pragma - mark
@@ -113,10 +116,12 @@
 {
     if (!self.videoRecorder.isRecording)
     {
+        AudioServicesPlaySystemSound(1117);
         [self.videoRecorder startRecording:self.glView.bounds];
     }
     else
     {
+        AudioServicesPlaySystemSound(1118);
         NSURL *movieURL = [self.videoRecorder stopRecording];
 
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];

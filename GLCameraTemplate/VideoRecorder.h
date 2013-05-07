@@ -17,5 +17,6 @@
 - (void)startRecording:(CGRect)frame;
 - (NSURL *)stopRecording;
 - (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame;
+- (void)writeAudioSample:(CMSampleBufferRef)sampleBuffer;
 
 @end

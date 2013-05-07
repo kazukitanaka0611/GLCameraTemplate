@@ -14,8 +14,8 @@
 @property (nonatomic, strong) NSURL *movieURL;
 
 @property (nonatomic, strong) AVAssetWriter *assertWriter;
-@property (nonatomic, strong) AVAssetWriterInput *audioInput;
-@property (nonatomic, strong) AVAssetWriterInput *videoInput;
+@property (nonatomic, strong) AVAssetWriterInput *audioWriter;
+@property (nonatomic, strong) AVAssetWriterInput *videoWriter;
 @property (nonatomic, strong) AVAssetWriterInputPixelBufferAdaptor *adaptor;
 
 @property (nonatomic, assign) GLubyte *rawImageData;
@@ -59,12 +59,14 @@
                                         AVEncoderBitRateKey : @(64000)
                                       };
     
-    self.audioInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio
+    self.audioWriter = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio
                                                          outputSettings:audioInputSetting];
 
-    if ([self.assertWriter canAddInput:self.audioInput])
+    self.audioWriter.expectsMediaDataInRealTime = YES;
+    
+    if ([self.assertWriter canAddInput:self.audioWriter])
     {
-        //[self.assertWriter addInput:self.audioInput];
+        [self.assertWriter addInput:self.audioWriter];
     }
     
     // Video Input
@@ -74,13 +76,13 @@
                                         AVVideoHeightKey : @(frame.size.height)
                                       };
 
-    self.videoInput = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
+    self.videoWriter = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
                                                                 outputSettings:videoInputSetting];
-    self.videoInput.expectsMediaDataInRealTime = NO;
+    self.videoWriter.expectsMediaDataInRealTime = YES;
 
-    if ([self.assertWriter canAddInput:self.videoInput])
+    if ([self.assertWriter canAddInput:self.videoWriter])
     {
-        [self.assertWriter addInput:self.videoInput];
+        [self.assertWriter addInput:self.videoWriter];
     }
 
     // AVAssetWriterInputPixelBufferAdaptor
@@ -91,7 +93,7 @@
                                                 (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @(frame.size.width * 4)
                                             };
     
-    self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.videoInput
+    self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.videoWriter
                                                               sourcePixelBufferAttributes:pixelBufferAttributes];
 
     // Start Writing
@@ -110,22 +112,22 @@
 #pragma - mark
 - (NSURL *)stopRecording
 {
-//    [self.audioInput markAsFinished];
-    [self.videoInput markAsFinished];
+    [self.audioWriter markAsFinished];
+    [self.videoWriter markAsFinished];
     
 #if __IPHONE_OS_VERSION_MIN_REQUIRED <= 60000
     [self.assertWriter finishWritingWithCompletionHandler:^{
 
         self.assertWriter = nil;
-        self.audioInput = nil;
-        self.videoInput = nil;
+        self.audioWriter = nil;
+        self.videoWriter = nil;
         self.adaptor = nil;
     }];
 #else
     [self.assertWriter finishWriting];
     self.assertWriter = nil;
-    self.audioInput = nil;
-    self.videoInput = nil;
+    self.audioWriter = nil;
+    self.videoWriter = nil;
     self.adaptor = nil;
 #endif
 
@@ -142,7 +144,7 @@
 {
     if (self.assertWriter.status == AVAssetWriterStatusWriting)
     {
-        if (self.videoInput.readyForMoreMediaData)
+        if (self.videoWriter.readyForMoreMediaData)
         {
             CMTime presentationTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
             // Start
@@ -192,6 +194,14 @@
                 [self stopRecording];
             }
         }
+    }
+}
+
+- (void)writeAudioSample:(CMSampleBufferRef)sampleBuffer
+{
+    if (self.audioWriter.readyForMoreMediaData)
+    {
+        [self.audioWriter appendSampleBuffer:sampleBuffer];
     }
 }
 

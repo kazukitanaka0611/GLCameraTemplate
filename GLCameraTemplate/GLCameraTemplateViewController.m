@@ -87,10 +87,15 @@
         {
             [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds];
         }
-
+        
         [self.glView drawFrame:cameraFrame];
 
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    }
+
+    if (mediaType == AVMediaTypeAudio)
+    {
+        [self.videoRecorder writeAudioSample:sampleBuffer];
     }
 }
 

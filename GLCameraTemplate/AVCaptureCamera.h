@@ -19,5 +19,9 @@
 @interface AVCaptureCamera : NSObject
 
 - (id)initWithDelelgate:(id)aDelegate;
+- (void)switchCamera;
+
+@property (nonatomic, readonly) NSInteger deviceCount;
+@property (nonatomic, readonly) BOOL hasFlash;
 
 @end

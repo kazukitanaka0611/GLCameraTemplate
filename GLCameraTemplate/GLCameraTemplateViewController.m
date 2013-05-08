@@ -51,6 +51,17 @@
     self.glView = [[OpenGLView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.glView];
 
+    if (1 < self.camera.deviceCount)
+    {
+        UIButton *switchCameraButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+        switchCameraButton.frame = CGRectMake(245, 10, 70, 35);
+        switchCameraButton.backgroundColor = [UIColor clearColor];
+        [switchCameraButton addTarget:self
+                               action:@selector(switchCameraButtonClick:)
+                     forControlEvents:UIControlEventTouchUpInside];
+        [self.view addSubview:switchCameraButton];
+    }
+    
     // UIToolbar
     UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44,
                                                                      self.view.frame.size.width, 44)];
@@ -134,6 +145,12 @@
                                     completionBlock:^(NSURL *assetURL, NSError *error){
         }];
     }
+}
+
+#pragma - mark
+- (void)switchCameraButtonClick:(UIButton *)button
+{
+    [self.camera switchCamera];
 }
 
 @end

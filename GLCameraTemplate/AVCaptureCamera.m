@@ -15,6 +15,9 @@
 @property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
 
 @property (nonatomic ,strong) AVCaptureSession *captureSession;
+
+@property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
+
 @property (nonatomic, strong) AVCaptureVideoDataOutput *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput *audioOutput;
 
@@ -27,6 +30,9 @@
 {
     if (self = [super init])
     {
+        _deviceCount = [AVCaptureDevice devices].count;
+        _hasFlash = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo].hasFlash;
+
         self.delegate = aDelegate;
         
         self.captureSession = [[AVCaptureSession alloc] init];
@@ -55,13 +61,13 @@
         }
 
         // Video Input
-        AVCaptureDeviceInput *videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:
-                                            [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
-                                                                                  error:nil];
+        self.videoInput = [[AVCaptureDeviceInput alloc] initWithDevice:
+                           [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
+                                                                 error:nil];
         
-        if ([self.captureSession canAddInput:videoInput])
+        if ([self.captureSession canAddInput:self.videoInput])
         {
-            [self.captureSession addInput:videoInput];
+            [self.captureSession addInput:self.videoInput];
         }
         
         // Video Output
@@ -111,6 +117,35 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.delegate processCameraFrame:sampleBuffer mediaType:mediaType];
 
     });
+}
+
+#pragma - mark
+- (void)switchCamera
+{
+    AVCaptureDevicePosition setPosition = AVCaptureDevicePositionBack;
+
+    if (self.videoInput.device.position == AVCaptureDevicePositionBack)
+    {
+        setPosition = AVCaptureDevicePositionFront;
+    }
+
+    AVCaptureDeviceInput *newInput = nil;
+    for (AVCaptureDevice *device in [AVCaptureDevice devices])
+    {
+        if ([device position] == setPosition)
+        {
+            newInput = [[AVCaptureDeviceInput alloc]initWithDevice:device error:nil];
+        }
+    }
+
+    if (newInput != nil)
+    {
+        [self.captureSession beginConfiguration];
+        [self.captureSession removeInput:self.videoInput];
+        self.videoInput = newInput;
+        [self.captureSession addInput:newInput];
+        [self.captureSession commitConfiguration];
+    }
 }
 
 @end

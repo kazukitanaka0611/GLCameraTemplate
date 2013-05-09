@@ -77,6 +77,10 @@
                                                                         target:self
                                                                         action:@selector(recordBarButtonItemClick:)];
     toolbar.items = @[ shutterButtonItem, recordButtonItem ];
+
+    // TapGestureRecognizer
+    UITapGestureRecognizer *tapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapGestureHandler:)];
+    [self.glView addGestureRecognizer:tapGesture];
 }
 
 - (void)didReceiveMemoryWarning
@@ -90,9 +94,7 @@
 {
     if (self.videoRecorder.isRecording)
     {
-        CVPixelBufferRef pixelBuffer = NULL;
-
-        [self.glView recordView:&pixelBuffer pixelBufferPool:self.videoRecorder.adaptor.pixelBufferPool];
+        CVPixelBufferRef pixelBuffer = [self.glView recordView:self.videoRecorder.adaptor.pixelBufferPool];
         
         [self.videoRecorder writeSample:sampleBuffer mediaType:mediaType pixelBuffer:pixelBuffer];
     }
@@ -169,6 +171,14 @@ static void endSound (SystemSoundID soundID, void *myself)
 - (void)switchCameraButtonClick:(UIButton *)button
 {
     [self.camera switchCamera];
+}
+
+#pragma mark -
+- (void)tapGestureHandler:(UITapGestureRecognizer *)recogniser
+{
+    CGPoint point = [recogniser locationInView:self.glView];
+
+    [self.camera setFocus:point];
 }
 
 #pragma mark - dealloc

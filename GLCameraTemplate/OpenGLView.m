@@ -354,23 +354,24 @@ static void bufferFree(void *info, const void *data, size_t size)
 }
 
 #pragma mark -
-- (void)recordView:(CVPixelBufferRef *)pixelBuffer pixelBufferPool:(CVPixelBufferPoolRef)pixelBufferPool
+- (CVPixelBufferRef)recordView:(CVPixelBufferPoolRef)pixelBufferPool
 {
     glReadPixels(0, 0, self.frame.size.width, self.frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, self.rawImageData);
 
-    CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, pixelBuffer);
+    CVPixelBufferRef pixelBuffer = NULL;
+    CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, &pixelBuffer);
 
-    CVPixelBufferLockBaseAddress(*pixelBuffer, 0);
+    CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 
     if (cvErr != kCVReturnSuccess)
     {
-        CVPixelBufferUnlockBaseAddress(*pixelBuffer, 0);
-        CVBufferRelease(*pixelBuffer);
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVBufferRelease(pixelBuffer);
         exit(1);
     }
 
-    unsigned char* baseAddress = CVPixelBufferGetBaseAddress(*pixelBuffer);
-    unsigned rowbytes = CVPixelBufferGetBytesPerRow(*pixelBuffer);
+    unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
+    unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
 
     unsigned char* src;
     unsigned char* dst;
@@ -383,6 +384,8 @@ static void bufferFree(void *info, const void *data, size_t size)
 
         memmove(dst, src, self.frame.size.width * 4);
     }
+
+    return pixelBuffer;
 }
 
 #pragma mark

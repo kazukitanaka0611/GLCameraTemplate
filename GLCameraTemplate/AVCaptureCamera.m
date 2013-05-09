@@ -18,7 +18,6 @@
 
 @property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
 
-@property (nonatomic, strong) AVCaptureVideoDataOutput *videoOutput;
 @property (nonatomic, strong) AVCaptureAudioDataOutput *audioOutput;
 
 @end
@@ -79,21 +78,59 @@
         }
         
         // Video Output
-        self.videoOutput = [[AVCaptureVideoDataOutput alloc] init];
-        [self.videoOutput setAlwaysDiscardsLateVideoFrames:YES];
-        self.videoOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
+        AVCaptureVideoDataOutput *videoOutput = [[AVCaptureVideoDataOutput alloc] init];
+        [videoOutput setAlwaysDiscardsLateVideoFrames:YES];
+        videoOutput.videoSettings = @{(id)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA)};
 
         // Video Capture Queue
         dispatch_queue_t videoCaputerQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
-        [self.videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
+        [videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
         dispatch_release(videoCaputerQueue);
 
-        if ([self.captureSession canAddOutput:self.videoOutput])
+        if ([self.captureSession canAddOutput:videoOutput])
         {
-            [self.captureSession addOutput:self.videoOutput];
+            [self.captureSession addOutput:videoOutput];
         }
 
         [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+
+        // Configuration
+        if ([self.videoInput.device lockForConfiguration:nil])
+        {
+            // Foucus
+            if ([self.videoInput.device isFocusPointOfInterestSupported]
+            &&  [self.videoInput.device isFocusModeSupported:AVCaptureFocusModeAutoFocus])
+            {
+                self.videoInput.device.focusMode = AVCaptureFocusModeAutoFocus;
+            }
+
+            // Exposure
+            if ([self.videoInput.device isExposurePointOfInterestSupported]
+            && [self.videoInput.device isExposureModeSupported:AVCaptureExposureModeAutoExpose])
+            {
+                self.videoInput.device.exposureMode = AVCaptureExposureModeAutoExpose;
+            }
+
+            // Flash
+            if ([self.videoInput.device isFocusModeSupported:AVCaptureFlashModeAuto])
+            {
+                self.videoInput.device.focusMode = AVCaptureFlashModeAuto;
+            }
+
+            // WhiteBalance
+            if ([self.videoInput.device isWhiteBalanceModeSupported:AVCaptureWhiteBalanceModeAutoWhiteBalance])
+            {
+                self.videoInput.device.whiteBalanceMode = AVCaptureWhiteBalanceModeAutoWhiteBalance;
+            }
+
+            // Tourch
+            if ([self.videoInput.device isTorchModeSupported:AVCaptureTorchModeAuto])
+            {
+                self.videoInput.device.torchMode = AVCaptureTorchModeAuto;
+            }
+
+            [self.videoInput.device unlockForConfiguration];
+        }
 
         if (![self.captureSession isRunning])
         {
@@ -158,7 +195,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark -
 - (void)captureStartRunning:(NSNotification *)notification
 {
-    if ([self.delegate respondsToSelector:@selector(captureStartRunning:)])
+    if ([self.delegate respondsToSelector:@selector(captureDidStartRinning)])
     {
         [self.delegate captureDidStartRinning];
     }
@@ -184,6 +221,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
     }
 
+    // Expouse Set
     if (device.isExposurePointOfInterestSupported
     && [device isExposureModeSupported:AVCaptureExposureModeAutoExpose])
     {
@@ -217,7 +255,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.delegate = nil;
     self.videoInput = nil;
     
-    self.videoOutput = nil;
     self.audioOutput = nil;
 
     self.captureSession = nil;

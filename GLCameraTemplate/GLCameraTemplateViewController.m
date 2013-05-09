@@ -90,7 +90,11 @@
 {
     if (self.videoRecorder.isRecording)
     {
-        [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds mediaType:mediaType];
+        CVPixelBufferRef pixelBuffer = NULL;
+
+        [self.glView recordView:&pixelBuffer pixelBufferPool:self.videoRecorder.adaptor.pixelBufferPool];
+        
+        [self.videoRecorder writeSample:sampleBuffer mediaType:mediaType pixelBuffer:pixelBuffer];
     }
 
     if (mediaType == AVMediaTypeVideo)
@@ -141,6 +145,8 @@
         AudioServicesPlaySystemSound(1118);
         NSURL *movieURL = [self.videoRecorder stopRecording];
 
+        [self.glView stopRecording];
+
         ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
         [library writeVideoAtPathToSavedPhotosAlbum:movieURL
                                     completionBlock:^(NSURL *assetURL, NSError *error){
@@ -153,6 +159,8 @@ static void endSound (SystemSoundID soundID, void *myself)
 {
     [((__bridge GLCameraTemplateViewController *)myself).videoRecorder
      startRecording:((__bridge GLCameraTemplateViewController *)myself).glView.bounds];
+
+    [((__bridge GLCameraTemplateViewController *)myself).glView startRecording];
     
     AudioServicesRemoveSystemSoundCompletion (soundID);
 }

@@ -16,6 +16,10 @@
 
 @property (nonatomic, strong) EAGLContext *context;
 
+@property (nonatomic, assign) GLubyte *rawImageData;
+
+@property (nonatomic, assign) unsigned bufferRowBytes;
+
 @end
 
 @implementation OpenGLView
@@ -337,6 +341,55 @@
 static void bufferFree(void *info, const void *data, size_t size)
 {
     free((void *)data);
+}
+
+#pragma mark -
+- (void)startRecording
+{
+    // Raw Data
+    NSInteger dataLength = self.frame.size.width * self.frame.size.height * 4;
+    self.rawImageData = valloc(dataLength * sizeof(GLubyte));
+
+    self.bufferRowBytes = ((unsigned)self.frame.size.width * 4 + 63) & ~63;
+}
+
+#pragma mark -
+- (void)recordView:(CVPixelBufferRef *)pixelBuffer pixelBufferPool:(CVPixelBufferPoolRef)pixelBufferPool
+{
+    glReadPixels(0, 0, self.frame.size.width, self.frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, self.rawImageData);
+
+    CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, pixelBufferPool, pixelBuffer);
+
+    CVPixelBufferLockBaseAddress(*pixelBuffer, 0);
+
+    if (cvErr != kCVReturnSuccess)
+    {
+        CVPixelBufferUnlockBaseAddress(*pixelBuffer, 0);
+        CVBufferRelease(*pixelBuffer);
+        exit(1);
+    }
+
+    unsigned char* baseAddress = CVPixelBufferGetBaseAddress(*pixelBuffer);
+    unsigned rowbytes = CVPixelBufferGetBytesPerRow(*pixelBuffer);
+
+    unsigned char* src;
+    unsigned char* dst;
+
+    for(unsigned int i = 0; i < self.frame.size.height; ++i) {
+
+        src = self.rawImageData + self.bufferRowBytes * i;
+
+        dst = baseAddress + rowbytes * ((unsigned)self.frame.size.height - 1 - i);
+
+        memmove(dst, src, self.frame.size.width * 4);
+    }
+}
+
+#pragma mark
+- (void)stopRecording
+{
+    free(self.rawImageData);
+    self.rawImageData = nil;
 }
 
 #pragma mark - dealloc

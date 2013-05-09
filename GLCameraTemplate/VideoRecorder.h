@@ -16,6 +16,10 @@
 
 - (void)startRecording:(CGRect)frame;
 - (NSURL *)stopRecording;
-- (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame mediaType:(NSString *)mediaType;
+- (void)writeSample:(CMSampleBufferRef)sampleBuffer
+          mediaType:(NSString *)mediaType
+        pixelBuffer:(CVPixelBufferRef)pixelBuffer;
+
+@property (nonatomic, readonly) AVAssetWriterInputPixelBufferAdaptor *adaptor;
 
 @end

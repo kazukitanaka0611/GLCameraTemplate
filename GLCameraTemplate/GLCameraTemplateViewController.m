@@ -15,6 +15,7 @@
 #import "AVCaptureCamera.h"
 #import "VideoRecorder.h"
 
+#import "CameraFlashButton.h"
 #import "PhotoPrevieViewController.h"
 
 @interface GLCameraTemplateViewController ()
@@ -51,6 +52,7 @@
     self.glView = [[OpenGLView alloc] initWithFrame:self.view.bounds];
     [self.view addSubview:self.glView];
 
+    // Camera Switch Button
     if (1 < self.camera.deviceCount)
     {
         UIButton *switchCameraButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
@@ -60,6 +62,16 @@
                                action:@selector(switchCameraButtonClick:)
                      forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:switchCameraButton];
+    }
+
+    // Camera Flash button
+    if (self.camera.hasFlash)
+    {
+        CameraFlashButton *flashButton = [[CameraFlashButton alloc] initWithPosition:CGPointMake(10, 10)
+                                                                              tiltle:@"flash"
+                                                                         buttonNames:@[@"Auto", @"ON", @"OFF"]
+                                                                          selectItem:0];
+        [self.view addSubview:flashButton];
     }
     
     // UIToolbar

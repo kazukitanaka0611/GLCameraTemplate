@@ -88,18 +88,21 @@
 #pragma - mark
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType
 {
-    CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-    CVPixelBufferLockBaseAddress(cameraFrame, 0);
-
     if (self.videoRecorder.isRecording)
     {
-        [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds mediaType:AVMediaTypeVideo];
+        [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds mediaType:mediaType];
     }
-    
-    [self.glView drawFrame:cameraFrame];
 
-    CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    if (mediaType == AVMediaTypeVideo)
+    {
+        CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+        CVPixelBufferLockBaseAddress(cameraFrame, 0);
+
+        [self.glView drawFrame:cameraFrame];
+
+        CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+    }
 }
 
 #pragma - mark
@@ -130,8 +133,8 @@
 {
     if (!self.videoRecorder.isRecording)
     {
+        AudioServicesAddSystemSoundCompletion(1117, NULL, NULL, endSound, (__bridge void*)self);
         AudioServicesPlaySystemSound(1117);
-        [self.videoRecorder startRecording:self.glView.bounds];
     }
     else
     {
@@ -143,6 +146,15 @@
                                     completionBlock:^(NSURL *assetURL, NSError *error){
         }];
     }
+}
+
+#pragma - mark
+static void endSound (SystemSoundID soundID, void *myself)
+{
+    [((__bridge GLCameraTemplateViewController *)myself).videoRecorder
+     startRecording:((__bridge GLCameraTemplateViewController *)myself).glView.bounds];
+    
+    AudioServicesRemoveSystemSoundCompletion (soundID);
 }
 
 #pragma mark -

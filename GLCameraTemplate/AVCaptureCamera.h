@@ -13,13 +13,15 @@
 @protocol AVCaptureCameraDelegate <NSObject>
 
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType;
+- (void)captureDidStartRinning;
 
 @end
 
 @interface AVCaptureCamera : NSObject
 
-- (id)initWithDelelgate:(id)aDelegate;
+- (id)initWithDelelgate:(id)delegate;
 - (void)switchCamera;
+- (void)setFocus:(CGPoint)position;
 
 @property (nonatomic, readonly) NSInteger deviceCount;
 @property (nonatomic, readonly) BOOL hasFlash;

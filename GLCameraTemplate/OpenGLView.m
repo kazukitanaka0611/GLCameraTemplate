@@ -20,11 +20,13 @@
 
 @implementation OpenGLView
 
+#pragma mark -
 + (Class)layerClass
 {
     return [CAEAGLLayer class];
 }
 
+#pragma mark -
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
@@ -50,6 +52,7 @@
     return self;
 }
 
+#pragma mark -
 - (BOOL)createFrameBuffers
 {
     glEnable(GL_TEXTURE_2D);
@@ -106,6 +109,7 @@
     return shader;
 }
 
+#pragma mark -
 - (NSString *)getVertexShaderString
 {
     NSString *const kVertexShaderString = SHADER_STRING
@@ -125,6 +129,7 @@
     return kVertexShaderString;
 }
 
+#pragma mark -
 - (NSString *)getFragmentShaderString
 {
     NSString *const kFragmentShaderString = SHADER_STRING
@@ -142,6 +147,7 @@
     return kFragmentShaderString;
 }
 
+#pragma mark -
 - (BOOL)loadShader
 {
     // Vertex Shader
@@ -225,6 +231,7 @@
     return YES;
 }
 
+#pragma mark -
 - (BOOL)drawFrame:(CVImageBufferRef)cameraFrame
 {
     BOOL success = FALSE;
@@ -267,6 +274,7 @@
     return success;
 }
 
+#pragma mark -
 - (UIImage *)convertUIImage
 {
     int width = 0;
@@ -325,9 +333,16 @@
     return image;
 }
 
+#pragma mark -
 static void bufferFree(void *info, const void *data, size_t size)
 {
     free((void *)data);
+}
+
+#pragma mark - dealloc
+- (void)dealloc
+{
+    self.context = nil;
 }
 
 @end

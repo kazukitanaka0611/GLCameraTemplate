@@ -26,7 +26,7 @@
 
 @implementation VideoRecorder
 
-#pragma - mark
+#pragma mark -
 - (void)startRecording:(CGRect)frame
 {
     // Movie URL
@@ -51,7 +51,8 @@
     bzero(&acl, sizeof(acl));
     acl.mChannelLayoutTag = kAudioChannelLayoutTag_Mono;
 
-    NSDictionary *audioInputSetting = @{
+    // Audio Writer
+    NSDictionary *audioWriterSetting = @{
                                         AVFormatIDKey : @(kAudioFormatMPEG4AAC),
                                         AVNumberOfChannelsKey : @(1),
                                         AVSampleRateKey : @(preferredHardwareSampleRate),
@@ -60,7 +61,7 @@
                                       };
     
     self.audioWriter = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeAudio
-                                                         outputSettings:audioInputSetting];
+                                                         outputSettings:audioWriterSetting];
 
     self.audioWriter.expectsMediaDataInRealTime = YES;
     
@@ -69,15 +70,15 @@
         [self.assertWriter addInput:self.audioWriter];
     }
     
-    // Video Input
-    NSDictionary *videoInputSetting = @{
+    // Video Writer
+    NSDictionary *videoWriterSetting = @{
                                         AVVideoCodecKey : AVVideoCodecH264,
                                         AVVideoWidthKey : @(frame.size.width),
                                         AVVideoHeightKey : @(frame.size.height)
                                       };
 
     self.videoWriter = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
-                                                                outputSettings:videoInputSetting];
+                                                                outputSettings:videoWriterSetting];
     self.videoWriter.expectsMediaDataInRealTime = YES;
 
     if ([self.assertWriter canAddInput:self.videoWriter])
@@ -96,9 +97,7 @@
     self.adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.videoWriter
                                                               sourcePixelBufferAttributes:pixelBufferAttributes];
 
-    // Start Writing
-    [self.assertWriter startWriting];
-
+    // Raw Data
     NSInteger dataLength = (frame.size.width * frame.size.height) * 4;
     _rawImageData = valloc(dataLength * sizeof(GLubyte));
 
@@ -107,15 +106,18 @@
     // Recoding
     _isRecording = YES;
     self.isFirstFrame = YES;
+
+    // Start Writing
+    [self.assertWriter startWriting];
 }
 
-#pragma - mark
+#pragma mark -
 - (NSURL *)stopRecording
 {
     [self.audioWriter markAsFinished];
     [self.videoWriter markAsFinished];
     
-#if __IPHONE_OS_VERSION_MIN_REQUIRED <= 60000
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 60000
     [self.assertWriter finishWritingWithCompletionHandler:^{
 
         self.assertWriter = nil;
@@ -139,70 +141,85 @@
     return self.movieURL;
 }
 
-#pragma - mark
-- (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame
+#pragma mark -
+- (void)writeSample:(CMSampleBufferRef)sampleBuffer frame:(CGRect)frame mediaType:(NSString *)mediaType
 {
     if (self.assertWriter.status == AVAssetWriterStatusWriting)
     {
-        if (self.videoWriter.readyForMoreMediaData)
+        if (mediaType == AVMediaTypeVideo)
         {
-            CMTime presentationTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
-            // Start
-            if (self.isFirstFrame)
+            // Video
+            if (self.videoWriter.readyForMoreMediaData)
             {
-                [self.assertWriter startSessionAtSourceTime:presentationTime];
-                self.isFirstFrame = NO;
-            }
+                CMTime presentationTime = CMSampleBufferGetOutputPresentationTimeStamp(sampleBuffer);
+                // Start
+                if (self.isFirstFrame)
+                {
+                    [self.assertWriter startSessionAtSourceTime:presentationTime];
+                    self.isFirstFrame = NO;
+                }
 
-            glReadPixels(0, 0, frame.size.width, frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
-            
-            CVPixelBufferRef pixelBuffer = NULL;
-            CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
+                glReadPixels(0, 0, frame.size.width, frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, _rawImageData);
+                
+                CVPixelBufferRef pixelBuffer = NULL;
+                CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, [self.adaptor pixelBufferPool], &pixelBuffer);
 
-            CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+                CVPixelBufferLockBaseAddress(pixelBuffer, 0);
 
-            if (cvErr != kCVReturnSuccess)
-            {
+                if (cvErr != kCVReturnSuccess)
+                {
+                    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+                    CVBufferRelease(pixelBuffer);
+                    exit(1);
+                }
+
+                unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
+                unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
+
+                unsigned char* src;
+                unsigned char* dst;
+
+                for(unsigned int i = 0; i < frame.size.height; ++i) {
+
+                    src = _rawImageData + _bufferRowBytes * i;
+
+                    dst = baseAddress + rowbytes * ((unsigned)frame.size.height - 1 - i);
+
+                    memmove(dst, src, frame.size.width * 4);
+                }
+
+                // Append
+                BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
+
                 CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
                 CVBufferRelease(pixelBuffer);
-                exit(1);
+
+                if (!append)
+                {
+                    [self stopRecording];
+                }
             }
-
-            unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
-            unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
-
-            unsigned char* src;
-            unsigned char* dst;
-
-            for(unsigned int i = 0; i < frame.size.height; ++i) {
-
-                src = _rawImageData + _bufferRowBytes * i;
-
-                dst = baseAddress + rowbytes * ((unsigned)frame.size.height - 1 - i);
-
-                memmove(dst, src, frame.size.width * 4);
-            }
-
-            // Append
-            BOOL append = [self.adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
-
-            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-            CVBufferRelease(pixelBuffer);
-
-            if (!append)
+        }
+        else
+        {
+            // Audio
+            if (self.audioWriter.readyForMoreMediaData)
             {
-                [self stopRecording];
+                [self.audioWriter appendSampleBuffer:sampleBuffer];
             }
         }
     }
 }
 
-- (void)writeAudioSample:(CMSampleBufferRef)sampleBuffer
+#pragma mark - dealloc
+- (void)dealloc
 {
-    if (self.audioWriter.readyForMoreMediaData)
-    {
-        [self.audioWriter appendSampleBuffer:sampleBuffer];
-    }
+    self.movieURL = nil;
+
+    self.assertWriter = nil;
+    self.audioWriter = nil;
+    self.videoWriter = nil;
+    self.adaptor = nil;
 }
 
 @end

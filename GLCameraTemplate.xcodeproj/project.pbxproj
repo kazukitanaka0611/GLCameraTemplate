@@ -26,6 +26,7 @@
 		2F618C581733A519002F3903 /* AVCaptureCamera.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F618C571733A519002F3903 /* AVCaptureCamera.m */; };
 		2FB4203C1733D66E009C4026 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB4203B1733D66E009C4026 /* AudioToolbox.framework */; };
 		2FB4203F1733D7AF009C4026 /* PhotoPrevieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FB4203E1733D7AF009C4026 /* PhotoPrevieViewController.m */; };
+		2FB8EE07173B0AB300B83F87 /* CameraFlashButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */; };
 		2FEEEBE7173465AE00AA0A54 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEEBE6173465AE00AA0A54 /* AssetsLibrary.framework */; };
 		2FEEEBEA17346BB800AA0A54 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEEBE917346BB800AA0A54 /* VideoRecorder.m */; };
 /* End PBXBuildFile section */
@@ -58,6 +59,8 @@
 		2FB4203B1733D66E009C4026 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		2FB4203D1733D7AF009C4026 /* PhotoPrevieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPrevieViewController.h; sourceTree = "<group>"; };
 		2FB4203E1733D7AF009C4026 /* PhotoPrevieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPrevieViewController.m; sourceTree = "<group>"; };
+		2FB8EE05173B0AB300B83F87 /* CameraFlashButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFlashButton.h; sourceTree = "<group>"; };
+		2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFlashButton.m; sourceTree = "<group>"; };
 		2FEEEBE6173465AE00AA0A54 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
 		2FEEEBE817346BB800AA0A54 /* VideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRecorder.h; sourceTree = "<group>"; };
 		2FEEEBE917346BB800AA0A54 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
@@ -127,6 +130,8 @@
 				2F410721173071E000002BB2 /* GLCameraTemplateViewController.m */,
 				2FB4203D1733D7AF009C4026 /* PhotoPrevieViewController.h */,
 				2FB4203E1733D7AF009C4026 /* PhotoPrevieViewController.m */,
+				2FB8EE05173B0AB300B83F87 /* CameraFlashButton.h */,
+				2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */,
 				2F41072D1730733A00002BB2 /* OpenGLView.h */,
 				2F41072E1730733A00002BB2 /* OpenGLView.m */,
 				2F618C561733A519002F3903 /* AVCaptureCamera.h */,
@@ -224,6 +229,7 @@
 				2F618C581733A519002F3903 /* AVCaptureCamera.m in Sources */,
 				2FB4203F1733D7AF009C4026 /* PhotoPrevieViewController.m in Sources */,
 				2FEEEBEA17346BB800AA0A54 /* VideoRecorder.m in Sources */,
+				2FB8EE07173B0AB300B83F87 /* CameraFlashButton.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

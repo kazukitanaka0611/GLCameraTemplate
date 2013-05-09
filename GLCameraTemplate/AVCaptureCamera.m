@@ -25,16 +25,24 @@
 
 @implementation AVCaptureCamera
 
-#pragma - mark
-- (id)initWithDelelgate:(id)aDelegate
+#pragma mark -
+- (id)initWithDelelgate:(id)delegate
 {
     if (self = [super init])
     {
+        self.delegate = delegate;
+
+        // Public Property
         _deviceCount = [AVCaptureDevice devices].count;
         _hasFlash = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo].hasFlash;
 
-        self.delegate = aDelegate;
-        
+        // Notification
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(captureStartRunning:)
+                                                     name:AVCaptureSessionDidStartRunningNotification
+                                                   object:nil];
+
+        // AVCaptureSession
         self.captureSession = [[AVCaptureSession alloc] init];
 
         // Audio Input
@@ -96,30 +104,29 @@
     return self;
 }
 
-#pragma - mark
+#pragma mark -
 - (void)captureOutput:(AVCaptureOutput *)captureOutput
 didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
        fromConnection:(AVCaptureConnection *)connection
 {
     dispatch_sync(dispatch_get_main_queue(), ^{
 
-        NSString *mediaType;
-        if(captureOutput == self.videoOutput)
-        {
-            mediaType = AVMediaTypeVideo;
-        }
+        NSString *mediaType = AVMediaTypeVideo;
 
         if (captureOutput == self.audioOutput)
         {
             mediaType = AVMediaTypeAudio;
         }
 
-        [self.delegate processCameraFrame:sampleBuffer mediaType:mediaType];
+        if ([self.delegate respondsToSelector:@selector(processCameraFrame:mediaType:)])
+        {
+            [self.delegate processCameraFrame:sampleBuffer mediaType:mediaType];
+        }
 
     });
 }
 
-#pragma - mark
+#pragma mark -
 - (void)switchCamera
 {
     AVCaptureDevicePosition setPosition = AVCaptureDevicePositionBack;
@@ -146,6 +153,79 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [self.captureSession addInput:newInput];
         [self.captureSession commitConfiguration];
     }
+}
+
+#pragma mark -
+- (void)captureStartRunning:(NSNotification *)notification
+{
+    if ([self.delegate respondsToSelector:@selector(captureStartRunning:)])
+    {
+        [self.delegate captureDidStartRinning];
+    }
+}
+
+#pragma mark -
+- (void)setFocus:(CGPoint)position
+{
+    [self.captureSession beginConfiguration];
+
+    AVCaptureDevice *device = self.videoInput.device;
+
+    // Focus set
+    if (device.isFocusPointOfInterestSupported
+    && [device isFocusModeSupported:AVCaptureFlashModeAuto]
+    ) {
+        if ([device lockForConfiguration:nil])
+        {
+            device.focusPointOfInterest = position;
+            device.focusMode = AVCaptureFocusModeAutoFocus;
+
+            [device unlockForConfiguration];
+        }
+    }
+
+    if (device.isExposurePointOfInterestSupported
+    && [device isExposureModeSupported:AVCaptureExposureModeAutoExpose])
+    {
+        if ([device lockForConfiguration:nil])
+        {
+            device.exposurePointOfInterest = position;
+            device.exposureMode = AVCaptureExposureModeAutoExpose;
+
+            [device unlockForConfiguration];
+        }
+    }
+    
+    [self.captureSession commitConfiguration];
+}
+
+#pragma mark - dealloc
+- (void)dealloc
+{
+    [self.captureSession stopRunning];
+
+    for (AVCaptureDeviceInput *input in self.captureSession.inputs)
+    {
+        [self.captureSession removeInput:input];
+    }
+
+    for (AVCaptureOutput *output in self.captureSession.outputs)
+    {
+        [self.captureSession removeOutput:output];
+    }
+
+    self.delegate = nil;
+    self.videoInput = nil;
+    
+    self.videoOutput = nil;
+    self.audioOutput = nil;
+
+    self.captureSession = nil;
+
+    [[NSNotificationCenter defaultCenter] removeObserver:nil
+                                                    name:AVCaptureSessionDidStartRunningNotification
+                                                  object:nil];
+
 }
 
 @end

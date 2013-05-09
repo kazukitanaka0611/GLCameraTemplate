@@ -10,6 +10,6 @@
 
 @interface PhotoPrevieViewController : UIViewController
 
-- (id)initWithImage:(UIImage *)aImage;
+- (id)initWithImage:(UIImage *)image;
 
 @end

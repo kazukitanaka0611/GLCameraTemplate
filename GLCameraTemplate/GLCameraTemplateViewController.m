@@ -54,7 +54,7 @@
     if (1 < self.camera.deviceCount)
     {
         UIButton *switchCameraButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        switchCameraButton.frame = CGRectMake(245, 10, 70, 35);
+        switchCameraButton.frame = CGRectMake(245.0f, 10.0f, 70.0f, 35.0f);
         switchCameraButton.backgroundColor = [UIColor clearColor];
         [switchCameraButton addTarget:self
                                action:@selector(switchCameraButtonClick:)
@@ -63,8 +63,8 @@
     }
     
     // UIToolbar
-    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44,
-                                                                     self.view.frame.size.width, 44)];
+    UIToolbar *toolbar = [[UIToolbar alloc] initWithFrame:CGRectMake(0, self.view.frame.size.height - 44.0f,
+                                                                     self.view.frame.size.width, 44.0f)];
     [self.view addSubview:toolbar];
 
     // Shutter Button
@@ -88,26 +88,24 @@
 #pragma - mark
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType
 {
-    if (mediaType == AVMediaTypeVideo)
+    CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+    CVPixelBufferLockBaseAddress(cameraFrame, 0);
+
+    if (self.videoRecorder.isRecording)
     {
-        CVImageBufferRef cameraFrame = CMSampleBufferGetImageBuffer(sampleBuffer);
-
-        CVPixelBufferLockBaseAddress(cameraFrame, 0);
-
-        if (self.videoRecorder.isRecording)
-        {
-            [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds];
-        }
-        
-        [self.glView drawFrame:cameraFrame];
-
-        CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+        [self.videoRecorder writeSample:sampleBuffer frame:self.glView.bounds mediaType:AVMediaTypeVideo];
     }
+    
+    [self.glView drawFrame:cameraFrame];
 
-    if (mediaType == AVMediaTypeAudio)
-    {
-        [self.videoRecorder writeAudioSample:sampleBuffer];
-    }
+    CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
+}
+
+#pragma - mark
+- (void)captureDidStartRinning
+{
+    [self.camera setFocus:self.glView.center];
 }
 
 #pragma - mark
@@ -127,7 +125,7 @@
                            }];
 }
 
-#pragma - mark
+#pragma mark -
 - (void)recordBarButtonItemClick:(UIBarButtonItem *)barButtonItem
 {
     if (!self.videoRecorder.isRecording)
@@ -147,10 +145,18 @@
     }
 }
 
-#pragma - mark
+#pragma mark -
 - (void)switchCameraButtonClick:(UIButton *)button
 {
     [self.camera switchCamera];
+}
+
+#pragma mark - dealloc
+- (void)dealloc
+{
+    self.glView = nil;
+    self.camera = nil;
+    self.videoRecorder = nil;
 }
 
 @end

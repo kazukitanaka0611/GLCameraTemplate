@@ -16,13 +16,13 @@
 
 @implementation PhotoPrevieViewController
 
-- (id)initWithImage:(UIImage *)aImage
+- (id)initWithImage:(UIImage *)image
 {
     self = [super init];
 
     if (self)
     {
-        self.image = aImage;
+        self.image = image;
     }
 
     return self;
@@ -68,13 +68,13 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma - mark
+#pragma mark -
 - (void)backButtonItemClick:(UIBarButtonItem *)barButtonItem
 {
     [self dismissViewControllerAnimated:YES completion:NULL];
 }
 
-#pragma - mark
+#pragma mark -
 - (void)resizeImage:(UIImage *)aOriginalImage imageView:(UIImageView *)aImageView
 {
     float aspect = aOriginalImage.size.height / aOriginalImage.size.width;
@@ -100,6 +100,12 @@
     aImageView.image = newImage;
 
     UIGraphicsEndImageContext();
+}
+
+#pragma mark - dealloc
+- (void)dealloc
+{
+    self.image = nil;
 }
 
 @end

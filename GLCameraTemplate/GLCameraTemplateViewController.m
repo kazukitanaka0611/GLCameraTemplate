@@ -24,6 +24,9 @@
 @property (nonatomic, strong) AVCaptureCamera *camera;
 @property (nonatomic, strong) VideoRecorder *videoRecorder;
 
+@property (nonatomic, strong) UIButton *switchCameraButton;
+@property (nonatomic, strong) CameraFlashButton *flashButton;
+
 @end
 
 @implementation GLCameraTemplateViewController
@@ -53,25 +56,33 @@
     [self.view addSubview:self.glView];
 
     // Camera Switch Button
-    if (1 < self.camera.deviceCount)
+    self.switchCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
+    self.switchCameraButton.frame = CGRectMake(245.0f, 10.0f, 70.0f, 35.0f);
+    self.switchCameraButton.backgroundColor = [UIColor clearColor];
+    CALayer *layer = self.switchCameraButton.layer;
+    layer.backgroundColor = [[UIColor colorWithWhite:1.0f alpha:0.2f] CGColor];
+    layer.borderWidth = 1.0f;
+    layer.cornerRadius = 15.0f;
+    [self.switchCameraButton addTarget:self
+                           action:@selector(switchCameraButtonClick:)
+                 forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:self.switchCameraButton];
+    
+    if (1 == self.camera.deviceCount)
     {
-        UIButton *switchCameraButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        switchCameraButton.frame = CGRectMake(245.0f, 10.0f, 70.0f, 35.0f);
-        switchCameraButton.backgroundColor = [UIColor clearColor];
-        [switchCameraButton addTarget:self
-                               action:@selector(switchCameraButtonClick:)
-                     forControlEvents:UIControlEventTouchUpInside];
-        [self.view addSubview:switchCameraButton];
+        self.switchCameraButton.hidden = YES;
     }
 
     // Camera Flash button
-    if (self.camera.hasFlash)
+    self.flashButton = [[CameraFlashButton alloc] initWithPosition:CGPointMake(10, 10)
+                                                            tiltle:@"flash"
+                                                       buttonNames:@[@"Auto", @"ON", @"OFF"]
+                                                        selectItem:0];
+    [self.view addSubview:self.flashButton];
+    
+    if (!self.camera.hasFlash)
     {
-        CameraFlashButton *flashButton = [[CameraFlashButton alloc] initWithPosition:CGPointMake(10, 10)
-                                                                              tiltle:@"flash"
-                                                                         buttonNames:@[@"Auto", @"ON", @"OFF"]
-                                                                          selectItem:0];
-        [self.view addSubview:flashButton];
+        self.flashButton.hidden = YES;
     }
     
     // UIToolbar
@@ -153,10 +164,33 @@
     {
         AudioServicesAddSystemSoundCompletion(1117, NULL, NULL, endSound, (__bridge void*)self);
         AudioServicesPlaySystemSound(1117);
+
+        if (self.camera.hasFlash)
+        {
+            self.flashButton.hidden = YES;
+        }
+
+        if (1 < self.camera.deviceCount)
+        {
+            self.switchCameraButton.hidden = YES;
+        }
     }
     else
     {
         AudioServicesPlaySystemSound(1118);
+
+        if (self.camera.hasFlash
+        && !self.camera.isFrontCamera)
+        {
+            self.flashButton.hidden = NO;
+        }
+
+        if (1 < self.camera.deviceCount)
+        {
+            self.switchCameraButton.hidden = NO;
+        }
+        
+        // Stop Record
         NSURL *movieURL = [self.videoRecorder stopRecording];
 
         [self.glView stopRecording];
@@ -183,6 +217,15 @@ static void endSound (SystemSoundID soundID, void *myself)
 - (void)switchCameraButtonClick:(UIButton *)button
 {
     [self.camera switchCamera];
+
+    if (self.camera.isFrontCamera)
+    {
+        self.flashButton.hidden = YES;
+    }
+    else
+    {
+        self.flashButton.hidden = NO;
+    }
 }
 
 #pragma mark -

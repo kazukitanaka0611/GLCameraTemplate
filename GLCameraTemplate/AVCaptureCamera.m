@@ -15,10 +15,7 @@
 @property (nonatomic, assign) id<AVCaptureCameraDelegate> delegate;
 
 @property (nonatomic ,strong) AVCaptureSession *captureSession;
-
 @property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
-
-@property (nonatomic, strong) AVCaptureAudioDataOutput *audioOutput;
 
 @end
 
@@ -55,16 +52,16 @@
         }
 
         // Audio Output
-        self.audioOutput = [[AVCaptureAudioDataOutput alloc] init];
+        AVCaptureAudioDataOutput *audioOutput = [[AVCaptureAudioDataOutput alloc] init];
 
         // Audio Captuer Queue
         dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
-        [self.audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
+        [audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
         dispatch_release(audioCaptureQueue);
 
-        if ([self.captureSession canAddOutput:self.audioOutput])
+        if ([self.captureSession canAddOutput:audioOutput])
         {
-            [self.captureSession addOutput:self.audioOutput];
+            [self.captureSession addOutput:audioOutput];
         }
 
         // Video Input
@@ -150,7 +147,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
         NSString *mediaType = AVMediaTypeVideo;
 
-        if (captureOutput == self.audioOutput)
+        // Audio Output
+        if (captureOutput == self.captureSession.outputs[0])
         {
             mediaType = AVMediaTypeAudio;
         }
@@ -166,11 +164,14 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 #pragma mark -
 - (void)switchCamera
 {
+    _isFrontCamera = NO;
+    
     AVCaptureDevicePosition setPosition = AVCaptureDevicePositionBack;
 
     if (self.videoInput.device.position == AVCaptureDevicePositionBack)
     {
         setPosition = AVCaptureDevicePositionFront;
+        _isFrontCamera = YES;
     }
 
     AVCaptureDeviceInput *newInput = nil;
@@ -251,14 +252,12 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     {
         [self.captureSession removeOutput:output];
     }
-
-    self.delegate = nil;
-    self.videoInput = nil;
     
-    self.audioOutput = nil;
-
+    self.videoInput = nil;
     self.captureSession = nil;
 
+    self.delegate = nil;
+    
     [[NSNotificationCenter defaultCenter] removeObserver:nil
                                                     name:AVCaptureSessionDidStartRunningNotification
                                                   object:nil];

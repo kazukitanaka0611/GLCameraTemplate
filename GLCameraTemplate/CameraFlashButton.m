@@ -73,7 +73,7 @@
 
         self.backgroundColor = [UIColor clearColor];
 
-        CALayer *layer = [self layer];
+        CALayer *layer = self.layer;
         layer.backgroundColor = [[UIColor colorWithWhite:1.0f alpha:0.2f] CGColor];
         layer.borderWidth = 1.0f;
         layer.cornerRadius = 15.0f;
@@ -122,7 +122,7 @@
 
         if (self.isExpanded)
         {
-            [self layer].frame = self.baseFrame;
+            self.layer.frame = self.baseFrame;
             [UIView commitAnimations];
             self.isExpanded = NO;
         }
@@ -162,7 +162,7 @@
             index++;
         }
 
-        [self layer].frame = self.expandFrame;
+        self.layer.frame = self.expandFrame;
     }
     else
     {

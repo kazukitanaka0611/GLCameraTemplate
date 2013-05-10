@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F2346FC173DA58700F101B0 /* Camera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F5173DA58700F101B0 /* Camera@2x.png */; };
+		2F2346FD173DA58700F101B0 /* CameraLarge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F6173DA58700F101B0 /* CameraLarge@2x.png */; };
+		2F2346FE173DA58700F101B0 /* Handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F7173DA58700F101B0 /* Handle@2x.png */; };
+		2F2346FF173DA58700F101B0 /* RecordOff@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F8173DA58700F101B0 /* RecordOff@2x.png */; };
+		2F234700173DA58700F101B0 /* RecordOn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F9173DA58700F101B0 /* RecordOn@2x.png */; };
+		2F234701173DA58700F101B0 /* Toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346FA173DA58700F101B0 /* Toggle@2x.png */; };
+		2F234702173DA58700F101B0 /* Video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346FB173DA58700F101B0 /* Video@2x.png */; };
 		2F410704173071C300002BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410703173071C300002BB2 /* UIKit.framework */; };
 		2F410706173071C300002BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410705173071C300002BB2 /* Foundation.framework */; };
 		2F410708173071C300002BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410707173071C300002BB2 /* CoreGraphics.framework */; };
@@ -32,6 +39,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F2346F5173DA58700F101B0 /* Camera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Camera@2x.png"; sourceTree = "<group>"; };
+		2F2346F6173DA58700F101B0 /* CameraLarge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CameraLarge@2x.png"; sourceTree = "<group>"; };
+		2F2346F7173DA58700F101B0 /* Handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Handle@2x.png"; sourceTree = "<group>"; };
+		2F2346F8173DA58700F101B0 /* RecordOff@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RecordOff@2x.png"; sourceTree = "<group>"; };
+		2F2346F9173DA58700F101B0 /* RecordOn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RecordOn@2x.png"; sourceTree = "<group>"; };
+		2F2346FA173DA58700F101B0 /* Toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Toggle@2x.png"; sourceTree = "<group>"; };
+		2F2346FB173DA58700F101B0 /* Video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Video@2x.png"; sourceTree = "<group>"; };
 		2F410700173071C300002BB2 /* GLCameraTemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GLCameraTemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F410703173071C300002BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		2F410705173071C300002BB2 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -146,6 +160,7 @@
 		2F41070A173071C300002BB2 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				2F5A94B1173DA20500F08364 /* Resources */,
 				2F41070B173071C300002BB2 /* GLCameraTemplate-Info.plist */,
 				2F41070C173071C300002BB2 /* InfoPlist.strings */,
 				2F41070F173071C300002BB2 /* main.m */,
@@ -155,6 +170,28 @@
 				2F410719173071C300002BB2 /* Default-568h@2x.png */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2F5A94B1173DA20500F08364 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				2F5A94B2173DA20500F08364 /* images */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		2F5A94B2173DA20500F08364 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				2F2346F5173DA58700F101B0 /* Camera@2x.png */,
+				2F2346F6173DA58700F101B0 /* CameraLarge@2x.png */,
+				2F2346F7173DA58700F101B0 /* Handle@2x.png */,
+				2F2346F8173DA58700F101B0 /* RecordOff@2x.png */,
+				2F2346F9173DA58700F101B0 /* RecordOn@2x.png */,
+				2F2346FA173DA58700F101B0 /* Toggle@2x.png */,
+				2F2346FB173DA58700F101B0 /* Video@2x.png */,
+			);
+			path = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -212,6 +249,13 @@
 				2F410716173071C300002BB2 /* Default.png in Resources */,
 				2F410718173071C300002BB2 /* Default@2x.png in Resources */,
 				2F41071A173071C300002BB2 /* Default-568h@2x.png in Resources */,
+				2F2346FC173DA58700F101B0 /* Camera@2x.png in Resources */,
+				2F2346FD173DA58700F101B0 /* CameraLarge@2x.png in Resources */,
+				2F2346FE173DA58700F101B0 /* Handle@2x.png in Resources */,
+				2F2346FF173DA58700F101B0 /* RecordOff@2x.png in Resources */,
+				2F234700173DA58700F101B0 /* RecordOn@2x.png in Resources */,
+				2F234701173DA58700F101B0 /* Toggle@2x.png in Resources */,
+				2F234702173DA58700F101B0 /* Video@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

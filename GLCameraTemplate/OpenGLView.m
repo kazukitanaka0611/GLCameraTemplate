@@ -314,7 +314,8 @@
 
     UIImageOrientation imageOrientation = UIImageOrientationUp;
 
-    switch([UIDevice currentDevice].orientation){
+    switch([UIDevice currentDevice].orientation)
+    {
         case UIDeviceOrientationLandscapeLeft:
             imageOrientation = UIImageOrientationLeft;
             break;
@@ -364,8 +365,8 @@ static void bufferFree(void *info, const void *data, size_t size)
     unsigned char* src;
     unsigned char* dst;
 
-    for(unsigned int i = 0; i < self.frame.size.height; ++i) {
-
+    for(unsigned int i = 0; i < self.frame.size.height; ++i)
+    {
         src = self.rawImageData + self.bufferRowBytes * i;
 
         dst = baseAddress + rowbytes * ((unsigned)self.frame.size.height - 1 - i);

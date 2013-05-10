@@ -103,6 +103,8 @@
 
         for (UILabel *label in self.lableList)
         {
+            label.font = [UIFont systemFontOfSize:12.0f];
+            
             if (count < selectedItem)
             {
                 label.frame = leftShrink;
@@ -114,7 +116,6 @@
             else if(count == selectedItem)
             {
                 label.frame = middleExpanded;
-                label.font = [UIFont systemFontOfSize:12.0f];
             }
 
             count++;
@@ -155,6 +156,7 @@
             else
             {
                 label.textColor = [UIColor colorWithWhite:0.0f alpha:0.8f];
+                label.font = [UIFont systemFontOfSize:12.0f];
             }
 
             label.frame = CGRectMake(45.0f + (44.0f * index), -3.0f, 44.0f, 39.0f);
@@ -188,7 +190,7 @@
         }
     }
 
-[UIView commitAnimations];
+    [UIView commitAnimations];
 }
 
 #pragma mark - dealloc

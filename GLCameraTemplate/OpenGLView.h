@@ -17,7 +17,7 @@
 - (BOOL)drawFrame:(CVImageBufferRef)cameraFrame;
 - (UIImage *)convertUIImage;
 - (void)startRecording;
-- (CVPixelBufferRef)recordView:(CVPixelBufferPoolRef)pixelBufferPool;
+- (void)recordView:(CVPixelBufferRef)pixelBuffer;
 - (void)stopRecording;
 
 @end

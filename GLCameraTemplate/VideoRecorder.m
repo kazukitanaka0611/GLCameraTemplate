@@ -150,9 +150,6 @@
                 // Append
                 BOOL append = [_adaptor appendPixelBuffer:pixelBuffer withPresentationTime:presentationTime];
 
-                CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
-                CVBufferRelease(pixelBuffer);
-
                 if (!append)
                 {
                     [self stopRecording];

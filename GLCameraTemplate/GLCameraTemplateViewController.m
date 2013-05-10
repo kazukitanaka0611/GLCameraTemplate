@@ -117,9 +117,24 @@
 {
     if (self.videoRecorder.isRecording)
     {
-        CVPixelBufferRef pixelBuffer = [self.glView recordView:self.videoRecorder.adaptor.pixelBufferPool];
+        CVPixelBufferRef pixelBuffer = NULL;
+        CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, self.videoRecorder.adaptor.pixelBufferPool, &pixelBuffer);
+
+        CVPixelBufferLockBaseAddress(pixelBuffer, 0);
+
+        if (cvErr != kCVReturnSuccess)
+        {
+            CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+            CVBufferRelease(pixelBuffer);
+            exit(1);
+        }
+
+        [self.glView recordView:pixelBuffer];
         
         [self.videoRecorder writeSample:sampleBuffer mediaType:mediaType pixelBuffer:pixelBuffer];
+
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0);
+        CVBufferRelease(pixelBuffer);
     }
 
     if (mediaType == AVMediaTypeVideo)
@@ -162,9 +177,8 @@
 {
     if (!self.videoRecorder.isRecording)
     {
-        AudioServicesAddSystemSoundCompletion(1117, NULL, NULL, endSound, (__bridge void*)self);
-        AudioServicesPlaySystemSound(1117);
-
+        [self.glView startRecording];
+        
         if (self.camera.hasFlash)
         {
             self.flashButton.hidden = YES;
@@ -174,6 +188,9 @@
         {
             self.switchCameraButton.hidden = YES;
         }
+
+        AudioServicesAddSystemSoundCompletion(1117, NULL, NULL, endSound, (__bridge void*)self);
+        AudioServicesPlaySystemSound(1117);
     }
     else
     {
@@ -207,8 +224,6 @@ static void endSound (SystemSoundID soundID, void *myself)
 {
     [((__bridge GLCameraTemplateViewController *)myself).videoRecorder
      startRecording:((__bridge GLCameraTemplateViewController *)myself).glView.bounds];
-
-    [((__bridge GLCameraTemplateViewController *)myself).glView startRecording];
     
     AudioServicesRemoveSystemSoundCompletion (soundID);
 }

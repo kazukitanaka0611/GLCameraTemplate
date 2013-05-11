@@ -86,6 +86,12 @@
 }
 
 #pragma mark -
+- (NSInteger)selectedItem
+{
+    return self.selectedItemIndex;
+}
+
+#pragma mark -
 - (void)setSelectedItem:(NSInteger)selectedItem
 {
     if (selectedItem < self.lableList.count)
@@ -131,7 +137,7 @@
         if (self.selectedItemIndex != selectedItem)
         {
             self.selectedItemIndex = selectedItem;
-            [self sendActionsForControlEvents:UIControlEventEditingChanged];
+            [self sendActionsForControlEvents:UIControlEventValueChanged];
         }
     }
 }

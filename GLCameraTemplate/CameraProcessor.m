@@ -235,6 +235,22 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     [self.captureSession commitConfiguration];
 }
 
+#pragma mark -
+- (void)setTorch:(NSInteger)index
+{
+    [self.captureSession beginConfiguration];
+    
+    AVCaptureDevice *device = self.videoInput.device;
+
+	if ([device lockForConfiguration:nil])
+    {
+        [device setTorchMode:index];
+        [device unlockForConfiguration];
+    }
+
+    [self.captureSession commitConfiguration];
+}
+
 #pragma mark - dealloc
 - (void)dealloc
 {

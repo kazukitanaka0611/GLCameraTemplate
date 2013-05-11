@@ -21,6 +21,7 @@
 - (id)initWithDelelgate:(id)delegate view:(UIView *)view;
 - (void)switchCamera;
 - (void)setFocus:(CGPoint)position;
+- (void)setTorch:(NSInteger)index;
 
 @property (nonatomic, readonly) NSInteger deviceCount;
 @property (nonatomic, readonly) BOOL hasFlash;

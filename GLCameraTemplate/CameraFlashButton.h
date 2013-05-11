@@ -13,4 +13,6 @@
 - (id)initWithPosition:(CGPoint)point tiltle:(NSString *)title
            buttonNames:(NSArray *)buttonNames selectItem:(NSInteger)selectItem;
 
+- (NSInteger)selectedItem;
+
 @end

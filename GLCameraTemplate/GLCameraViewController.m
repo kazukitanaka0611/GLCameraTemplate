@@ -84,8 +84,9 @@
     // Camera Flash button
     self.flashButton = [[CameraFlashButton alloc] initWithPosition:CGPointMake(10, 10)
                                                             tiltle:@"flash"
-                                                       buttonNames:@[@"Auto", @"ON", @"OFF"]
-                                                        selectItem:0];
+                                                       buttonNames:@[@"OFF", @"ON", @"Auto"]
+                                                        selectItem:2];
+    [self.flashButton addTarget:self action:@selector(setFlashLight:) forControlEvents:UIControlEventValueChanged];
     [self.view addSubview:self.flashButton];
     
     if (!self.cameraProcessor.hasFlash)
@@ -173,6 +174,12 @@
 }
 
 #pragma mark -
+- (OpenGLView *)createOpenGLView
+{
+    return [[OpenGLView alloc] initWithFrame:self.view.bounds];
+}
+
+#pragma mark -
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType
 {
     if (self.videoRecorder.isRecording)
@@ -207,20 +214,6 @@
 
         CVPixelBufferUnlockBaseAddress(cameraFrame, 0);
     }
-}
-
-#pragma mark -
-- (OpenGLView *)createOpenGLView
-{
-    return [[OpenGLView alloc] initWithFrame:self.view.bounds];
-}
-
-#pragma mark -
-- (void)captureDidStartRinning
-{
-    [self focusAnimation:self.glView.center];
-    
-    [self.cameraProcessor setFocus:self.glView.center];
 }
 
 #pragma mark =
@@ -368,6 +361,12 @@ static void endSound (SystemSoundID soundID, void *myself)
                                                  self.view.frame.size.height - 38.0f, 40.0f, 30.0f);
         self.shutterImageView.image = [UIImage imageNamed:@"RecordOff"];
     }
+}
+
+#pragma mark -
+- (void)setFlashLight:(id)sender
+{
+    [self.cameraProcessor setTorch:[((CameraFlashButton *)sender) selectedItem]];
 }
 
 #pragma mark -

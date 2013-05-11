@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "OpenGLView.h"
+
 @interface GLCameraViewController : UIViewController
+
+- (OpenGLView *)createOpenGLView;
 
 @end

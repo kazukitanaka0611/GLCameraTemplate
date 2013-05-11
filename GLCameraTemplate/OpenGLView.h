@@ -20,4 +20,8 @@
 - (void)recordView:(CVPixelBufferRef)pixelBuffer;
 - (void)stopRecording;
 
+- (NSString *)getVertexShaderString;
+- (NSString *)getFragmentShaderString;
+- (void)setUniform:(GLuint)programHandle;
+
 @end

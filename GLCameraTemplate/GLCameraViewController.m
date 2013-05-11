@@ -11,7 +11,6 @@
 #import <AudioToolbox/AudioToolbox.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-#import "OpenGLView.h"
 #import "CameraProcessor.h"
 #import "VideoRecorder.h"
 
@@ -61,7 +60,7 @@
     self.videoRecorder = [[VideoRecorder alloc] init];
 
     // OpenGL View
-    self.glView = [[OpenGLView alloc] initWithFrame:self.view.bounds];
+    self.glView = [self createOpenGLView];
     [self.view addSubview:self.glView];
 
     // Camera Switch Button
@@ -173,7 +172,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma - mark
+#pragma mark -
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType
 {
     if (self.videoRecorder.isRecording)
@@ -210,7 +209,13 @@
     }
 }
 
-#pragma - mark
+#pragma mark -
+- (OpenGLView *)createOpenGLView
+{
+    return [[OpenGLView alloc] initWithFrame:self.view.bounds];
+}
+
+#pragma mark -
 - (void)captureDidStartRinning
 {
     [self focusAnimation:self.glView.center];
@@ -218,7 +223,7 @@
     [self.cameraProcessor setFocus:self.glView.center];
 }
 
-#pragma - mark
+#pragma mark =
 - (void)shutterButtonClick:(UIButton *)button
 {
     if (!self.isVideo)
@@ -307,7 +312,7 @@
     }
 }
 
-#pragma - mark
+#pragma mark -
 static void endSound (SystemSoundID soundID, void *myself)
 {
     [((__bridge GLCameraViewController *)myself).videoRecorder
@@ -330,6 +335,10 @@ static void endSound (SystemSoundID soundID, void *myself)
 {
     [self.cameraProcessor switchCamera];
 
+    [self focusAnimation:self.glView.center];
+    
+    [self.cameraProcessor setFocus:self.glView.center];
+    
     if (self.cameraProcessor.isFrontCamera)
     {
         self.flashButton.hidden = YES;

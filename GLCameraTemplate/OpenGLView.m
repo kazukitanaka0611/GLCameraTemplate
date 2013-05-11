@@ -152,6 +152,12 @@
 }
 
 #pragma mark -
+- (void)setUniform:(GLuint)programHandle
+{
+    glUniform1i(glGetUniformLocation(programHandle, "videoFrame"), 0);
+}
+
+#pragma mark -
 - (BOOL)loadShader
 {
     // Vertex Shader
@@ -198,7 +204,7 @@
     }
 
     // uniform
-    glUniform1i(glGetUniformLocation(programHandle, "videoFrame"), 0);
+    [self setUniform:programHandle];
     glUseProgram(programHandle);
 
     if (vertexShader)

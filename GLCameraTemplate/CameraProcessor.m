@@ -211,7 +211,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
     // Focus set
     if (device.isFocusPointOfInterestSupported
-    && [device isFocusModeSupported:AVCaptureFlashModeAuto]
+    && [device isFocusModeSupported:AVCaptureFocusModeAutoFocus]
     ) {
         if ([device lockForConfiguration:nil])
         {

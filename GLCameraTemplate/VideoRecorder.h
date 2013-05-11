@@ -1,5 +1,5 @@
 //
-//  AVCameraRecorder.h
+//  VideoRecorder.h
 //  GLCameraTemplate
 //
 //  Created by kazuki_tanaka on 2013/05/04.

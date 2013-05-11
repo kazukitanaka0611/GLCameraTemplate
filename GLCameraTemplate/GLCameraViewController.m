@@ -53,16 +53,16 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
 
-    // Camera
-    self.cameraProcessor = [[CameraProcessor alloc] initWithDelelgate:self];
-
-    // Video Recorder
-    self.videoRecorder = [[VideoRecorder alloc] init];
-
     // OpenGL View
     self.glView = [self createOpenGLView];
     [self.view addSubview:self.glView];
 
+    // Camera
+    self.cameraProcessor = [[CameraProcessor alloc] initWithDelelgate:self view:self.glView];
+
+    // Video Recorder
+    self.videoRecorder = [[VideoRecorder alloc] init];
+    
     // Camera Switch Button
     self.switchCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
     self.switchCameraButton.frame = CGRectMake(250.0f, 10.0f, 60.0f, 32.0f);

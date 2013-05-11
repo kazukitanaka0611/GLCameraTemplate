@@ -13,13 +13,12 @@
 @protocol CameraProcessorDelegate <NSObject>
 
 - (void)processCameraFrame:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType;
-- (void)captureDidStartRinning;
 
 @end
 
 @interface CameraProcessor : NSObject
 
-- (id)initWithDelelgate:(id)delegate;
+- (id)initWithDelelgate:(id)delegate view:(UIView *)view;
 - (void)switchCamera;
 - (void)setFocus:(CGPoint)position;
 

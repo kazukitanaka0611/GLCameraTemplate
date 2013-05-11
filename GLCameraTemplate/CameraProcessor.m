@@ -22,7 +22,7 @@
 @implementation CameraProcessor
 
 #pragma mark -
-- (id)initWithDelelgate:(id)delegate
+- (id)initWithDelelgate:(id)delegate view:(UIView *)view
 {
     if (self = [super init])
     {
@@ -31,12 +31,6 @@
         // Public Property
         _deviceCount = [AVCaptureDevice devices].count;
         _hasFlash = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo].hasFlash;
-
-        // Notification
-        [[NSNotificationCenter defaultCenter] addObserver:self
-                                                 selector:@selector(captureStartRunning:)
-                                                     name:AVCaptureSessionDidStartRunningNotification
-                                                   object:nil];
 
         // AVCaptureSession
         self.captureSession = [[AVCaptureSession alloc] init];
@@ -129,6 +123,17 @@
             [self.videoInput.device unlockForConfiguration];
         }
 
+        // AVCaptureVideoPreviewLayer
+        AVCaptureVideoPreviewLayer *previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
+        [previewLayer setBackgroundColor:[[UIColor blackColor] CGColor]];
+        [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
+
+        // RootLayer
+        CALayer *rootLayer = [view layer];
+        [rootLayer setMasksToBounds:YES];
+        [previewLayer setFrame:[rootLayer bounds]];
+        [rootLayer addSublayer:previewLayer];
+
         if (![self.captureSession isRunning])
         {
             [self.captureSession startRunning];
@@ -194,15 +199,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 }
 
 #pragma mark -
-- (void)captureStartRunning:(NSNotification *)notification
-{
-    if ([self.delegate respondsToSelector:@selector(captureDidStartRinning)])
-    {
-        [self.delegate captureDidStartRinning];
-    }
-}
-
-#pragma mark -
 - (void)setFocus:(CGPoint)position
 {
     [self.captureSession beginConfiguration];
@@ -215,7 +211,8 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     ) {
         if ([device lockForConfiguration:nil])
         {
-            device.focusPointOfInterest = position;
+            // !!!: This is not work
+            //device.focusPointOfInterest = position;
             device.focusMode = AVCaptureFocusModeAutoFocus;
 
             [device unlockForConfiguration];
@@ -257,11 +254,6 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
     self.captureSession = nil;
 
     self.delegate = nil;
-    
-    [[NSNotificationCenter defaultCenter] removeObserver:nil
-                                                    name:AVCaptureSessionDidStartRunningNotification
-                                                  object:nil];
-
 }
 
 @end

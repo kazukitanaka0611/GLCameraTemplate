@@ -51,7 +51,7 @@
         // Audio Captuer Queue
         dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
         [audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
-        dispatch_release(audioCaptureQueue);
+        //dispatch_release(audioCaptureQueue);
 
         if ([self.captureSession canAddOutput:audioOutput])
         {
@@ -76,7 +76,7 @@
         // Video Capture Queue
         dispatch_queue_t videoCaputerQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
         [videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
-        dispatch_release(videoCaputerQueue);
+        //dispatch_release(videoCaputerQueue);
 
         if ([self.captureSession canAddOutput:videoOutput])
         {

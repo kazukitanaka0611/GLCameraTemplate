@@ -335,10 +335,12 @@ static void endSound (SystemSoundID soundID, void *myself)
     if (self.cameraProcessor.isFrontCamera)
     {
         self.flashButton.hidden = YES;
+        self.glView.isMirrored = YES;
     }
     else
     {
         self.flashButton.hidden = NO;
+        self.glView.isMirrored = NO;
     }
 }
 

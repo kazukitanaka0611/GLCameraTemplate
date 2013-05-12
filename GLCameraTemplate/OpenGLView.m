@@ -16,8 +16,8 @@
 
 @property (nonatomic, strong) EAGLContext *context;
 
+@property (nonatomic, assign) GLuint programHandle;
 @property (nonatomic, assign) GLubyte *rawImageData;
-
 @property (nonatomic, assign) unsigned bufferRowBytes;
 
 @end
@@ -123,9 +123,14 @@
 
         varying vec2 textureCoordinate;
 
+        uniform lowp float mirror;
+
         void main()
         {
-            gl_Position = position;
+            highp vec4 pos = position;
+            pos.x *= mirror;
+            
+            gl_Position = pos;
             textureCoordinate = inputTextureCoordinate.xy;
         }
     );
@@ -152,9 +157,9 @@
 }
 
 #pragma mark -
-- (void)setUniform:(GLuint)programHandle
+- (void)setUniform
 {
-    glUniform1i(glGetUniformLocation(programHandle, "videoFrame"), 0);
+    glUniform1i(glGetUniformLocation(self.programHandle, "videoFrame"), 0);
 }
 
 #pragma mark -
@@ -169,16 +174,16 @@
     GLuint fragmentShader = [self compileShader:fragmentShaderString shardrType:GL_FRAGMENT_SHADER];
 
     // program
-    GLuint programHandle = glCreateProgram();
-    glAttachShader(programHandle, vertexShader);
-    glAttachShader(programHandle, fragmentShader);
+    self.programHandle = glCreateProgram();
+    glAttachShader(self.programHandle, vertexShader);
+    glAttachShader(self.programHandle, fragmentShader);
 
-    glBindAttribLocation(programHandle, 0, "position");
-    glBindAttribLocation(programHandle, 1, "inputTextureCoordinate");
-    glLinkProgram(programHandle);
+    glBindAttribLocation(self.programHandle, 0, "position");
+    glBindAttribLocation(self.programHandle, 1, "inputTextureCoordinate");
+    glLinkProgram(self.programHandle);
 
     GLint status = 0;
-    glGetProgramiv(programHandle, GL_LINK_STATUS, &status);
+    glGetProgramiv(self.programHandle, GL_LINK_STATUS, &status);
 
     if (status == GL_FALSE)
     {
@@ -194,35 +199,13 @@
             fragmentShader = 0;
         }
 
-        if (programHandle)
+        if (self.programHandle)
         {
-            glDeleteProgram(programHandle);
-            programHandle = 0;
+            glDeleteProgram(self.programHandle);
+            self.programHandle = 0;
         }
 
         return NO;
-    }
-
-    // uniform
-    [self setUniform:programHandle];
-    glUseProgram(programHandle);
-
-    if (vertexShader)
-    {
-        glDeleteShader(vertexShader);
-        vertexShader = 0;
-    }
-
-    if (fragmentShader)
-    {
-        glDeleteShader(fragmentShader);
-        fragmentShader = 0;
-    }
-
-    if (programHandle)
-    {
-        glDeleteProgram(programHandle);
-        programHandle = 0;
     }
 
     // Texture
@@ -237,6 +220,18 @@
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture);
+
+    if (vertexShader)
+    {
+        glDeleteShader(vertexShader);
+        vertexShader = 0;
+    }
+
+    if (fragmentShader)
+    {
+        glDeleteShader(fragmentShader);
+        fragmentShader = 0;
+    }
 
     return YES;
 }
@@ -255,10 +250,10 @@
                      GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
 
         static const GLfloat squareVetrices[] = {
-            -1.0f, -1.0f,
-             1.0f, -1.0f,
-            -1.0f,  1.0f,
-             1.0f,  1.0f,
+            -1.0f, -1.0f, 0.0f,
+             1.0f, -1.0f, 0.0f,
+            -1.0f,  1.0f, 0.0f,
+             1.0f,  1.0f, 0.0f,
         };
 
         static const GLfloat textureVertices[] = {
@@ -267,14 +262,29 @@
              0.0f,  1.0f,
              0.0f,  0.0f
         };
+        
+        // uniform
+        glUseProgram(self.programHandle);
+        glUniform1f(glGetUniformLocation(self.programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
+        [self setUniform];
 
         glViewport(0, 0, self.frame.size.width, self.frame.size.height);
 
-        glVertexAttribPointer(0, 2, GL_FLOAT, 0, 0, squareVetrices);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 2, GL_FLOAT, 0, 0, textureVertices);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, textureVertices);
         glEnableVertexAttribArray(1);
+
+        GLint status = 0;
+
+        glValidateProgram(self.programHandle);
+        glGetProgramiv(self.programHandle, GL_VALIDATE_STATUS, &status);
+
+        if (status == 0)
+        {
+            success = NO;
+        }
 
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -392,6 +402,12 @@ static void bufferFree(void *info, const void *data, size_t size)
 - (void)dealloc
 {
     self.context = nil;
+
+    if (self.programHandle)
+    {
+        glDeleteProgram(self.programHandle);
+        self.programHandle = 0;
+    }
 }
 
 @end

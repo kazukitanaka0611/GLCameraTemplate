@@ -22,6 +22,8 @@
 
 - (NSString *)getVertexShaderString;
 - (NSString *)getFragmentShaderString;
-- (void)setUniform:(GLuint)programHandle;
+- (void)setUniform;
+
+@property (nonatomic, assign) BOOL isMirrored;
 
 @end

@@ -123,17 +123,6 @@
             [self.videoInput.device unlockForConfiguration];
         }
 
-        // AVCaptureVideoPreviewLayer
-        AVCaptureVideoPreviewLayer *previewLayer = [[AVCaptureVideoPreviewLayer alloc] initWithSession:self.captureSession];
-        [previewLayer setBackgroundColor:[[UIColor blackColor] CGColor]];
-        [previewLayer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
-
-        // RootLayer
-        CALayer *rootLayer = [view layer];
-        [rootLayer setMasksToBounds:YES];
-        [previewLayer setFrame:[rootLayer bounds]];
-        [rootLayer addSublayer:previewLayer];
-
         if (![self.captureSession isRunning])
         {
             [self.captureSession startRunning];

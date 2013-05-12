@@ -22,7 +22,7 @@
 @implementation CameraProcessor
 
 #pragma mark -
-- (id)initWithDelelgate:(id)delegate view:(UIView *)view
+- (id)initWithDelelgate:(id)delegate
 {
     if (self = [super init])
     {

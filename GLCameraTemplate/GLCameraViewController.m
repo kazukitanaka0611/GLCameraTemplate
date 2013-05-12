@@ -58,7 +58,7 @@
     [self.view addSubview:self.glView];
 
     // Camera
-    self.cameraProcessor = [[CameraProcessor alloc] initWithDelelgate:self view:self.glView];
+    self.cameraProcessor = [[CameraProcessor alloc] initWithDelelgate:self];
 
     // Video Recorder
     self.videoRecorder = [[VideoRecorder alloc] init];

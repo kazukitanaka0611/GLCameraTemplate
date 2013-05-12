@@ -18,7 +18,7 @@
 
 @interface CameraProcessor : NSObject
 
-- (id)initWithDelelgate:(id)delegate view:(UIView *)view;
+- (id)initWithDelelgate:(id)delegate;
 - (void)switchCamera;
 - (void)setFocus:(CGPoint)position;
 - (void)setTorch:(NSInteger)index;

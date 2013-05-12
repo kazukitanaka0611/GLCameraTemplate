@@ -16,7 +16,6 @@
 
 @property (nonatomic, strong) EAGLContext *context;
 
-@property (nonatomic, assign) GLuint programHandle;
 @property (nonatomic, assign) GLubyte *rawImageData;
 @property (nonatomic, assign) unsigned bufferRowBytes;
 
@@ -174,12 +173,12 @@
     GLuint fragmentShader = [self compileShader:fragmentShaderString shardrType:GL_FRAGMENT_SHADER];
 
     // program
-    self.programHandle = glCreateProgram();
-    glAttachShader(self.programHandle, vertexShader);
-    glAttachShader(self.programHandle, fragmentShader);
+    _programHandle = glCreateProgram();
+    glAttachShader(_programHandle, vertexShader);
+    glAttachShader(_programHandle, fragmentShader);
 
-    glBindAttribLocation(self.programHandle, 0, "position");
-    glBindAttribLocation(self.programHandle, 1, "inputTextureCoordinate");
+    glBindAttribLocation(_programHandle, 0, "position");
+    glBindAttribLocation(_programHandle, 1, "inputTextureCoordinate");
     glLinkProgram(self.programHandle);
 
     GLint status = 0;
@@ -202,7 +201,7 @@
         if (self.programHandle)
         {
             glDeleteProgram(self.programHandle);
-            self.programHandle = 0;
+            _programHandle = 0;
         }
 
         return NO;
@@ -264,8 +263,8 @@
         };
         
         // uniform
-        glUseProgram(self.programHandle);
-        glUniform1f(glGetUniformLocation(self.programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
+        glUseProgram(_programHandle);
+        glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
         [self setUniform];
 
         glViewport(0, 0, self.frame.size.width, self.frame.size.height);
@@ -278,8 +277,8 @@
 
         GLint status = 0;
 
-        glValidateProgram(self.programHandle);
-        glGetProgramiv(self.programHandle, GL_VALIDATE_STATUS, &status);
+        glValidateProgram(_programHandle);
+        glGetProgramiv(_programHandle, GL_VALIDATE_STATUS, &status);
 
         if (status == 0)
         {
@@ -403,10 +402,10 @@ static void bufferFree(void *info, const void *data, size_t size)
 {
     self.context = nil;
 
-    if (self.programHandle)
+    if (_programHandle)
     {
-        glDeleteProgram(self.programHandle);
-        self.programHandle = 0;
+        glDeleteProgram(_programHandle);
+        _programHandle = 0;
     }
 }
 

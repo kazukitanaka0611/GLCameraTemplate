@@ -25,5 +25,6 @@
 - (void)setUniform;
 
 @property (nonatomic, assign) BOOL isMirrored;
+@property (nonatomic, readonly) GLuint programHandle;
 
 @end

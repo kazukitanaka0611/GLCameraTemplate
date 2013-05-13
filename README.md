@@ -27,5 +27,5 @@ System Requirement
 
 Limitations
 ================
-This project can not work simulator
+This project can not work simulator  
 Test only iOS6 Device

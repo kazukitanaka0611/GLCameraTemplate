@@ -124,7 +124,7 @@
     // ShutterImageView
     self.shutterImageView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"CameraLarge"]];
     self.shutterImageView.frame = CGRectMake(self.view.frame.size.width / 2,
-                                             self.view.frame.size.height - 44.0f, 30.0f, 20.0f);
+                                             self.view.frame.size.height - 44.0f, 35.0f, 25.0f);
     self.shutterImageView.center = toolbar.center;
     [self.view addSubview:self.shutterImageView];
 
@@ -171,6 +171,20 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if (![self.cameraProcessor.captureSession isRunning])
+    {
+        [self.cameraProcessor.captureSession startRunning];
+    }
+
+    [self focusAnimation:self.glView.center];
+
+    [self.cameraProcessor setFocus:self.glView.center];
 }
 
 #pragma mark -
@@ -230,8 +244,15 @@
                                    orientation:(ALAssetOrientation)saveImage.imageOrientation
                                completionBlock:^(NSURL *assetURL, NSError *error){
 
+                                   [self.cameraProcessor.captureSession stopRunning];
+                                   
                                    PhotoPreviewViewController *controller = [[PhotoPreviewViewController alloc]initWithImage:saveImage];
+                                   
+                                   #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000
                                    [self presentViewController:controller animated:YES completion:NULL];
+                                   #else
+                                   [self presentModalViewController:controller animated:YES];
+                                   #endif
                                }];
     }
     else
@@ -296,9 +317,15 @@
             [library writeVideoAtPathToSavedPhotosAlbum:movieURL
                                         completionBlock:^(NSURL *assetURL, NSError *error){
 
+                                            [self.cameraProcessor.captureSession stopRunning];
+
                                             VideoPreviewViewController *controller = [[VideoPreviewViewController alloc] init];
                                             controller.videoPath = movieURL.path;
+                                            #if __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000
                                             [self presentViewController:controller animated:YES completion:NULL];
+                                            #else
+                                            [self presentModalViewController:controller animated:YES];
+                                            #endif
                                         }];
         }
 
@@ -351,16 +378,12 @@ static void endSound (SystemSoundID soundID, void *myself)
     {
         slider.value = 0;
         self.isVideo = NO;
-        self.shutterImageView.frame = CGRectMake(145.0f,
-                                                 self.view.frame.size.height - 33.35f, 30.0f, 20.0f);
         self.shutterImageView.image = [UIImage imageNamed:@"CameraLarge"];
     }
     else
     {
         slider.value = 1;
         self.isVideo = YES;
-        self.shutterImageView.frame = CGRectMake(142.0f,
-                                                 self.view.frame.size.height - 38.0f, 40.0f, 30.0f);
         self.shutterImageView.image = [UIImage imageNamed:@"RecordOff"];
     }
 }

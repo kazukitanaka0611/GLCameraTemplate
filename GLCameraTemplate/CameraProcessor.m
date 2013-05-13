@@ -14,7 +14,6 @@
 
 @property (nonatomic, assign) id<CameraProcessorDelegate> delegate;
 
-@property (nonatomic ,strong) AVCaptureSession *captureSession;
 @property (nonatomic, strong) AVCaptureDeviceInput *videoInput;
 
 @end
@@ -33,16 +32,16 @@
         _hasFlash = [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo].hasFlash;
 
         // AVCaptureSession
-        self.captureSession = [[AVCaptureSession alloc] init];
+        _captureSession = [[AVCaptureSession alloc] init];
 
         // Audio Input
         AVCaptureDeviceInput *audioInput = [[AVCaptureDeviceInput alloc] initWithDevice:
                                             [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio]
                                                                                   error:nil];
 
-        if ([self.captureSession canAddInput:audioInput])
+        if ([_captureSession canAddInput:audioInput])
         {
-            [self.captureSession addInput:audioInput];
+            [_captureSession addInput:audioInput];
         }
 
         // Audio Output
@@ -51,11 +50,12 @@
         // Audio Captuer Queue
         dispatch_queue_t audioCaptureQueue = dispatch_queue_create("Audio Capture Queue", DISPATCH_QUEUE_SERIAL);
         [audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
-        //dispatch_release(audioCaptureQueue);
-
-        if ([self.captureSession canAddOutput:audioOutput])
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+        dispatch_release(audioCaptureQueue);
+#endif
+        if ([_captureSession canAddOutput:audioOutput])
         {
-            [self.captureSession addOutput:audioOutput];
+            [_captureSession addOutput:audioOutput];
         }
 
         // Video Input
@@ -63,9 +63,9 @@
                            [AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeVideo]
                                                                  error:nil];
         
-        if ([self.captureSession canAddInput:self.videoInput])
+        if ([_captureSession canAddInput:self.videoInput])
         {
-            [self.captureSession addInput:self.videoInput];
+            [_captureSession addInput:self.videoInput];
         }
         
         // Video Output
@@ -76,14 +76,15 @@
         // Video Capture Queue
         dispatch_queue_t videoCaputerQueue = dispatch_queue_create("Video Capture Queue", DISPATCH_QUEUE_SERIAL);
         [videoOutput setSampleBufferDelegate:self queue:videoCaputerQueue];
-        //dispatch_release(videoCaputerQueue);
-
-        if ([self.captureSession canAddOutput:videoOutput])
+#if __IPHONE_OS_VERSION_MIN_REQUIRED < 60000
+        dispatch_release(videoCaputerQueue);
+#endif
+        if ([_captureSession canAddOutput:videoOutput])
         {
-            [self.captureSession addOutput:videoOutput];
+            [_captureSession addOutput:videoOutput];
         }
 
-        [self.captureSession setSessionPreset:AVCaptureSessionPresetMedium];
+        [_captureSession setSessionPreset:AVCaptureSessionPresetMedium];
 
         // Configuration
         if ([self.videoInput.device lockForConfiguration:nil])
@@ -123,9 +124,9 @@
             [self.videoInput.device unlockForConfiguration];
         }
 
-        if (![self.captureSession isRunning])
+        if (![_captureSession isRunning])
         {
-            [self.captureSession startRunning];
+            [_captureSession startRunning];
         }
     }
 
@@ -142,7 +143,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         NSString *mediaType = AVMediaTypeVideo;
 
         // Audio Output
-        if (captureOutput == self.captureSession.outputs[0])
+        if (captureOutput == _captureSession.outputs[0])
         {
             mediaType = AVMediaTypeAudio;
         }
@@ -179,18 +180,18 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
     if (newInput != nil)
     {
-        [self.captureSession beginConfiguration];
-        [self.captureSession removeInput:self.videoInput];
+        [_captureSession beginConfiguration];
+        [_captureSession removeInput:self.videoInput];
         self.videoInput = newInput;
-        [self.captureSession addInput:newInput];
-        [self.captureSession commitConfiguration];
+        [_captureSession addInput:newInput];
+        [_captureSession commitConfiguration];
     }
 }
 
 #pragma mark -
 - (void)setFocus:(CGPoint)position
 {
-    [self.captureSession beginConfiguration];
+    [_captureSession beginConfiguration];
 
     AVCaptureDevice *device = self.videoInput.device;
 
@@ -221,13 +222,13 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         }
     }
     
-    [self.captureSession commitConfiguration];
+    [_captureSession commitConfiguration];
 }
 
 #pragma mark -
 - (void)setTorch:(NSInteger)index
 {
-    [self.captureSession beginConfiguration];
+    [_captureSession beginConfiguration];
     
     AVCaptureDevice *device = self.videoInput.device;
 
@@ -237,26 +238,26 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
         [device unlockForConfiguration];
     }
 
-    [self.captureSession commitConfiguration];
+    [_captureSession commitConfiguration];
 }
 
 #pragma mark - dealloc
 - (void)dealloc
 {
-    [self.captureSession stopRunning];
+    [_captureSession stopRunning];
 
-    for (AVCaptureDeviceInput *input in self.captureSession.inputs)
+    for (AVCaptureDeviceInput *input in _captureSession.inputs)
     {
-        [self.captureSession removeInput:input];
+        [_captureSession removeInput:input];
     }
 
-    for (AVCaptureOutput *output in self.captureSession.outputs)
+    for (AVCaptureOutput *output in _captureSession.outputs)
     {
-        [self.captureSession removeOutput:output];
+        [_captureSession removeOutput:output];
     }
     
     self.videoInput = nil;
-    self.captureSession = nil;
+    _captureSession = nil;
 
     self.delegate = nil;
 }

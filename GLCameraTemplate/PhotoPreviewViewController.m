@@ -71,7 +71,13 @@
 #pragma mark -
 - (void)backButtonItemClick:(UIBarButtonItem *)barButtonItem
 {
+    
+#if __IPHONE_OS_VERSION_MIN_REQUIRED >= 50000
     [self dismissViewControllerAnimated:YES completion:NULL];
+#else
+    [self dismissModalViewControllerAnimated:YES];
+#endif
+
 }
 
 #pragma mark -

@@ -26,5 +26,6 @@
 @property (nonatomic, readonly) NSInteger deviceCount;
 @property (nonatomic, readonly) BOOL hasFlash;
 @property (nonatomic, readonly) BOOL isFrontCamera;
+@property (nonatomic, readonly) AVCaptureSession *captureSession;
 
 @end

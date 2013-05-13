@@ -28,4 +28,5 @@ System Requirement
 Limitations
 ================
 This project can not work simulator  
-Test only iOS6 Device
+Test only iOS6 Device   
+Image resource retina display only

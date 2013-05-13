@@ -24,3 +24,8 @@ System Requirement
 ・CoreVideo.framework  
 ・CoreMedia.framework  
 ・AVFoundation.framework  
+
+Limitations
+================
+This project can not work simulator
+Test only iOS6 Device

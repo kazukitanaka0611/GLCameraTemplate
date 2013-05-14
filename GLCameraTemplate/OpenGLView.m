@@ -280,7 +280,7 @@
         glValidateProgram(_programHandle);
         glGetProgramiv(_programHandle, GL_VALIDATE_STATUS, &status);
 
-        if (status == 0)
+        if (status == GL_FALSE)
         {
             success = NO;
         }

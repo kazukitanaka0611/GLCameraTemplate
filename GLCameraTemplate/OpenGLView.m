@@ -16,6 +16,9 @@
 
 @property (nonatomic, strong) EAGLContext *context;
 
+@property (nonatomic, assign) GLint frameWidth;
+@property (nonatomic, assign) GLint frameHeight;
+
 @property (nonatomic, assign) GLubyte *rawImageData;
 @property (nonatomic, assign) unsigned bufferRowBytes;
 
@@ -36,6 +39,11 @@
     if (self) {
         // Initialization code
 
+        if ([self respondsToSelector:@selector(setContentScaleFactor:)])
+        {
+            self.contentScaleFactor = [[UIScreen mainScreen] scale];
+        }
+        
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
         eaglLayer.opaque = YES;
         eaglLayer.drawableProperties = @{
@@ -72,6 +80,9 @@
     glBindRenderbuffer(GL_RENDERBUFFER, renderbuffer);
 
     [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
+
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_frameWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_frameHeight);
 
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, renderbuffer);
     if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -267,7 +278,7 @@
         glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
         [self setUniform];
 
-        glViewport(0, 0, self.frame.size.width, self.frame.size.height);
+        glViewport(0, 0, _frameWidth, _frameHeight);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
         glEnableVertexAttribArray(0);
@@ -296,36 +307,24 @@
 #pragma mark -
 - (UIImage *)convertUIImage
 {
-    int width = 0;
-    int hegith = 0;
-
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &hegith);
-
-    if ([self respondsToSelector:@selector(setContentScaleFactor:)])
-    {
-        width *= self.contentScaleFactor;
-        hegith *= self.contentScaleFactor;
-    }
-    
-    NSInteger myDateLength = width * hegith * 4;
+    NSInteger myDateLength = _frameWidth * _frameHeight * 4;
     GLubyte *buffer = (GLubyte *)malloc(myDateLength);
-    glReadPixels(0, 0, width, hegith, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+    glReadPixels(0, 0, _frameWidth, _frameHeight, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
 
     GLubyte *buffer2 = (GLubyte *)malloc(myDateLength);
-    for (int y = 0; y < hegith; y++)
+    for (int y = 0; y < _frameHeight; y++)
     {
-        memcpy(&buffer2[((hegith -1) -y) * width *4], &buffer[y * 4 * width], sizeof(GLubyte) * width *4);
+        memcpy(&buffer2[((_frameHeight -1) -y) * _frameWidth *4], &buffer[y * 4 * _frameWidth], sizeof(GLubyte) * _frameWidth *4);
     }
     free(buffer);
 
     CGDataProviderRef provider = CGDataProviderCreateWithData(NULL, buffer2, myDateLength, bufferFree);
     CGColorSpaceRef colorSpaceRef = CGColorSpaceCreateDeviceRGB();
-    CGImageRef cgImage = CGImageCreate(width,
-                                       hegith,
+    CGImageRef cgImage = CGImageCreate(_frameWidth,
+                                       _frameHeight,
                                        8,
                                        32,
-                                       4 * width,
+                                       4 * _frameWidth,
                                        colorSpaceRef,
                                        kCGBitmapByteOrderDefault,
                                        provider,

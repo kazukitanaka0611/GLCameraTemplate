@@ -302,6 +302,12 @@
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &width);
     glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &hegith);
 
+    if ([self respondsToSelector:@selector(setContentScaleFactor:)])
+    {
+        width *= self.contentScaleFactor;
+        hegith *= self.contentScaleFactor;
+    }
+    
     NSInteger myDateLength = width * hegith * 4;
     GLubyte *buffer = (GLubyte *)malloc(myDateLength);
     glReadPixels(0, 0, width, hegith, GL_RGBA, GL_UNSIGNED_BYTE, buffer);

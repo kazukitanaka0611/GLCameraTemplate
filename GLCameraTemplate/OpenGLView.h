@@ -17,7 +17,7 @@
 - (BOOL)drawFrame:(CVImageBufferRef)cameraFrame;
 - (UIImage *)convertUIImage;
 - (void)startRecording;
-- (void)recordView:(CVPixelBufferRef)pixelBuffer;
+- (void)recordView:(CVImageBufferRef)pixelBuffer;
 - (void)stopRecording;
 
 - (NSString *)getVertexShaderString;

@@ -198,7 +198,7 @@
 {
     if (self.videoRecorder.isRecording)
     {
-        CVPixelBufferRef pixelBuffer = NULL;
+        CVImageBufferRef pixelBuffer = NULL;
         CVReturn cvErr = CVPixelBufferPoolCreatePixelBuffer(nil, self.videoRecorder.adaptor.pixelBufferPool, &pixelBuffer);
 
         CVPixelBufferLockBaseAddress(pixelBuffer, 0);

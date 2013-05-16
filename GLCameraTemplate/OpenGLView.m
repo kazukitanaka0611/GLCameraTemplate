@@ -368,16 +368,16 @@ static void bufferFree(void *info, const void *data, size_t size)
 - (void)startRecording
 {
     // Raw Data
-    NSInteger dataLength = self.frame.size.width * self.frame.size.height * 4;
+    NSInteger dataLength = _frameWidth * _frameHeight * 4;
     self.rawImageData = valloc(dataLength * sizeof(GLubyte));
 
-    self.bufferRowBytes = ((unsigned)self.frame.size.width * 4 + 63) & ~63;
+    self.bufferRowBytes = ((unsigned)_frameWidth * 4 + 63) & ~63;
 }
 
 #pragma mark -
-- (void)recordView:(CVPixelBufferRef)pixelBuffer
+- (void)recordView:(CVImageBufferRef)pixelBuffer
 {
-    glReadPixels(0, 0, self.frame.size.width, self.frame.size.height, GL_BGRA_EXT, GL_UNSIGNED_BYTE, self.rawImageData);
+    glReadPixels(0, 0, _frameWidth, _frameHeight, GL_BGRA_EXT, GL_UNSIGNED_BYTE, self.rawImageData);
 
     unsigned char* baseAddress = CVPixelBufferGetBaseAddress(pixelBuffer);
     unsigned rowbytes = CVPixelBufferGetBytesPerRow(pixelBuffer);
@@ -385,13 +385,13 @@ static void bufferFree(void *info, const void *data, size_t size)
     unsigned char* src;
     unsigned char* dst;
 
-    for(unsigned int i = 0; i < self.frame.size.height; ++i)
+    for(unsigned int i = 0; i < _frameHeight; ++i)
     {
         src = self.rawImageData + self.bufferRowBytes * i;
 
-        dst = baseAddress + rowbytes * ((unsigned)self.frame.size.height - 1 - i);
+        dst = baseAddress + rowbytes * ((unsigned)_frameHeight - 1 - i);
 
-        memmove(dst, src, self.frame.size.width * 4);
+        memmove(dst, src, _frameWidth * 4);
     }
 }
 

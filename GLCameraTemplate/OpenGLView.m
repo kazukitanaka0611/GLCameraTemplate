@@ -144,11 +144,11 @@
     (
         varying highp vec2 textureCoordinate;
 
-        uniform sampler2D videoFrame;
+        uniform sampler2D inputImageTexture;
 
         void main()
         {
-            gl_FragColor = texture2D(videoFrame, textureCoordinate);
+            gl_FragColor = texture2D(inputImageTexture, textureCoordinate);
         }
     );
 
@@ -158,7 +158,7 @@
 #pragma mark -
 - (void)setUniform
 {
-    glUniform1i(glGetUniformLocation(self.programHandle, "videoFrame"), 0);
+    glUniform1i(glGetUniformLocation(self.programHandle, "inputImageTexture"), 0);
 }
 
 #pragma mark -

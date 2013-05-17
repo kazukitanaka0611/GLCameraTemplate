@@ -98,7 +98,7 @@
     return YES;
 }
 
-- (GLuint)compileShader:(NSString *)shaderString shardrType:(GLenum)shaderType
+- (GLuint)compileShader:(NSString *)shaderString shaderType:(GLenum)shaderType
 {
     const GLchar *source = (GLchar *)[shaderString UTF8String];
 
@@ -169,7 +169,7 @@
 #pragma mark -
 - (void)setUniform
 {
-    glUniform1i(glGetUniformLocation(self.programHandle, "inputImageTexture"), 0);
+    glUniform1i(glGetUniformLocation(_programHandle, "inputImageTexture"), 0);
 }
 
 #pragma mark -
@@ -177,11 +177,11 @@
 {
     // Vertex Shader
     NSString *vertexShaderString = [self getVertexShaderString];
-    GLuint vertexShader = [self compileShader:vertexShaderString shardrType:GL_VERTEX_SHADER];
+    GLuint vertexShader = [self compileShader:vertexShaderString shaderType:GL_VERTEX_SHADER];
 
     // Fragment Shader
     NSString *fragmentShaderString = [self getFragmentShaderString];
-    GLuint fragmentShader = [self compileShader:fragmentShaderString shardrType:GL_FRAGMENT_SHADER];
+    GLuint fragmentShader = [self compileShader:fragmentShaderString shaderType:GL_FRAGMENT_SHADER];
 
     // program
     _programHandle = glCreateProgram();
@@ -190,10 +190,10 @@
 
     glBindAttribLocation(_programHandle, 0, "position");
     glBindAttribLocation(_programHandle, 1, "inputTextureCoordinate");
-    glLinkProgram(self.programHandle);
+    glLinkProgram(_programHandle);
 
     GLint status = 0;
-    glGetProgramiv(self.programHandle, GL_LINK_STATUS, &status);
+    glGetProgramiv(_programHandle, GL_LINK_STATUS, &status);
 
     if (status == GL_FALSE)
     {
@@ -209,9 +209,9 @@
             fragmentShader = 0;
         }
 
-        if (self.programHandle)
+        if (_programHandle)
         {
-            glDeleteProgram(self.programHandle);
+            glDeleteProgram(_programHandle);
             _programHandle = 0;
         }
 
@@ -220,6 +220,7 @@
 
     // Texture
     GLuint texture = 0;
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -227,9 +228,6 @@
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
 
     if (vertexShader)
     {
@@ -259,49 +257,114 @@
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bufferWidth, bufferHeight, 0,
                      GL_BGRA, GL_UNSIGNED_BYTE, CVPixelBufferGetBaseAddress(cameraFrame));
 
-        static const GLfloat squareVetrices[] = {
-            -1.0f, -1.0f, 0.0f,
-             1.0f, -1.0f, 0.0f,
-            -1.0f,  1.0f, 0.0f,
-             1.0f,  1.0f, 0.0f,
-        };
-
         static const GLfloat textureVertices[] = {
-             1.0f,  1.0f,
-             1.0f,  0.0f,
-             0.0f,  1.0f,
-             0.0f,  0.0f
+            1.0f,  1.0f,
+            1.0f,  0.0f,
+            0.0f,  1.0f,
+            0.0f,  0.0f
         };
-        
-        // uniform
-        glUseProgram(_programHandle);
-        glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
-        [self setUniform];
 
-        glViewport(0, 0, _frameWidth, _frameHeight);
-
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
-        glEnableVertexAttribArray(0);
-
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, textureVertices);
-        glEnableVertexAttribArray(1);
-
-        GLint status = 0;
-
-        glValidateProgram(_programHandle);
-        glGetProgramiv(_programHandle, GL_VALIDATE_STATUS, &status);
-
-        if (status == GL_FALSE)
-        {
-            success = NO;
-        }
-
-        glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-        success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
+        success = [self render: textureVertices];
     }
 
     return success;
+}
+
+#pragma mark -
+- (BOOL)drawImage:(UIImage *)image
+{
+    BOOL success = FALSE;
+
+    if (self.context)
+    {
+        CGImageRef imageRef = image.CGImage;
+        size_t imageWidth = CGImageGetWidth(imageRef);
+        size_t imageHeight = CGImageGetHeight(imageRef);
+
+        self.contentScaleFactor = image.scale;
+
+        glClearColor(0.0, 0.0, 0.0, 0.0);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        size_t imageBytesPerRow = CGImageGetBytesPerRow(imageRef);
+        size_t imageBitsPerComponent = CGImageGetBitsPerComponent(imageRef);
+        CGColorSpaceRef imageColorSpace = CGImageGetColorSpace(imageRef);
+
+        size_t imageTotalBytes = imageBytesPerRow * imageHeight;
+        Byte* imageData = (Byte*)malloc(imageTotalBytes);
+
+        memset(imageData, 0, imageTotalBytes);
+
+        CGContextRef memContext = CGBitmapContextCreate(imageData,
+                                                        imageWidth,
+                                                        imageHeight,
+                                                        imageBitsPerComponent,
+                                                        imageBytesPerRow,
+                                                        imageColorSpace,
+                                                        kCGImageAlphaPremultipliedLast);
+
+        CGContextDrawImage(memContext,
+                           CGRectMake(0.0f, 0.0f, (CGFloat)imageWidth, (CGFloat)imageHeight), imageRef);
+
+        CGContextRelease(memContext);
+        
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, imageWidth, imageHeight, 0,
+                     GL_RGBA, GL_UNSIGNED_BYTE, imageData);
+
+        free(imageData);
+
+        static const GLfloat textureVertices[] = {
+            0.0f, 1.0f,
+            1.0f, 1.0f,
+            0.0f, 0.0f,
+            1.0f, 0.0f
+        };
+
+        success = [self render:textureVertices];
+    }
+
+    return success;
+}
+
+#pragma mark -
+- (BOOL)render:(const GLvoid*)textureVertices
+{
+    static const GLfloat squareVetrices[] = {
+        -1.0f, -1.0f, 0.0f,
+         1.0f, -1.0f, 0.0f,
+        -1.0f,  1.0f, 0.0f,
+         1.0f,  1.0f, 0.0f,
+    };
+
+    // uniform
+    glUseProgram(_programHandle);
+    glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
+    [self setUniform];
+
+    glViewport(0, 0, _frameWidth, _frameHeight);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, textureVertices);
+    glEnableVertexAttribArray(1);
+
+    GLint status = 0;
+
+    glValidateProgram(_programHandle);
+    glGetProgramiv(_programHandle, GL_VALIDATE_STATUS, &status);
+
+    if (status == GL_FALSE)
+    {
+        return NO;
+    }
+
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+    glDisableVertexAttribArray(0);
+    glDisableVertexAttribArray(1);
+
+    return [self.context presentRenderbuffer:GL_RENDERBUFFER];
 }
 
 #pragma mark -
@@ -314,7 +377,8 @@
     GLubyte *buffer2 = (GLubyte *)malloc(myDateLength);
     for (int y = 0; y < _frameHeight; y++)
     {
-        memcpy(&buffer2[((_frameHeight -1) -y) * _frameWidth *4], &buffer[y * 4 * _frameWidth], sizeof(GLubyte) * _frameWidth *4);
+        memcpy(&buffer2[((_frameHeight -1) -y) * _frameWidth *4],
+               &buffer[y * 4 * _frameWidth], sizeof(GLubyte) * _frameWidth *4);
     }
     free(buffer);
 
@@ -368,7 +432,7 @@ static void bufferFree(void *info, const void *data, size_t size)
 - (void)startRecording
 {
     // Raw Data
-    NSInteger dataLength = _frameWidth * _frameHeight * 4;
+    NSInteger dataLength = (_frameWidth * _frameHeight) * 4;
     self.rawImageData = valloc(dataLength * sizeof(GLubyte));
 
     self.bufferRowBytes = ((unsigned)_frameWidth * 4 + 63) & ~63;

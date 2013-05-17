@@ -314,7 +314,8 @@
     GLubyte *buffer2 = (GLubyte *)malloc(myDateLength);
     for (int y = 0; y < _frameHeight; y++)
     {
-        memcpy(&buffer2[((_frameHeight -1) -y) * _frameWidth *4], &buffer[y * 4 * _frameWidth], sizeof(GLubyte) * _frameWidth *4);
+        memcpy(&buffer2[((_frameHeight -1) -y) * _frameWidth *4],
+               &buffer[y * 4 * _frameWidth], sizeof(GLubyte) * _frameWidth *4);
     }
     free(buffer);
 
@@ -368,7 +369,7 @@ static void bufferFree(void *info, const void *data, size_t size)
 - (void)startRecording
 {
     // Raw Data
-    NSInteger dataLength = _frameWidth * _frameHeight * 4;
+    NSInteger dataLength = (_frameWidth * _frameHeight) * 4;
     self.rawImageData = valloc(dataLength * sizeof(GLubyte));
 
     self.bufferRowBytes = ((unsigned)_frameWidth * 4 + 63) & ~63;

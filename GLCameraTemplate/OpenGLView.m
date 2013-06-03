@@ -98,7 +98,7 @@
     return YES;
 }
 
-- (GLuint)compileShader:(NSString *)shaderString shardrType:(GLenum)shaderType
+- (GLuint)compileShader:(NSString *)shaderString shaderType:(GLenum)shaderType
 {
     const GLchar *source = (GLchar *)[shaderString UTF8String];
 
@@ -169,7 +169,7 @@
 #pragma mark -
 - (void)setUniform
 {
-    glUniform1i(glGetUniformLocation(self.programHandle, "inputImageTexture"), 0);
+    glUniform1i(glGetUniformLocation(_programHandle, "inputImageTexture"), 0);
 }
 
 #pragma mark -
@@ -177,11 +177,11 @@
 {
     // Vertex Shader
     NSString *vertexShaderString = [self getVertexShaderString];
-    GLuint vertexShader = [self compileShader:vertexShaderString shardrType:GL_VERTEX_SHADER];
+    GLuint vertexShader = [self compileShader:vertexShaderString shaderType:GL_VERTEX_SHADER];
 
     // Fragment Shader
     NSString *fragmentShaderString = [self getFragmentShaderString];
-    GLuint fragmentShader = [self compileShader:fragmentShaderString shardrType:GL_FRAGMENT_SHADER];
+    GLuint fragmentShader = [self compileShader:fragmentShaderString shaderType:GL_FRAGMENT_SHADER];
 
     // program
     _programHandle = glCreateProgram();
@@ -190,10 +190,10 @@
 
     glBindAttribLocation(_programHandle, 0, "position");
     glBindAttribLocation(_programHandle, 1, "inputTextureCoordinate");
-    glLinkProgram(self.programHandle);
+    glLinkProgram(_programHandle);
 
     GLint status = 0;
-    glGetProgramiv(self.programHandle, GL_LINK_STATUS, &status);
+    glGetProgramiv(_programHandle, GL_LINK_STATUS, &status);
 
     if (status == GL_FALSE)
     {
@@ -209,9 +209,9 @@
             fragmentShader = 0;
         }
 
-        if (self.programHandle)
+        if (_programHandle)
         {
-            glDeleteProgram(self.programHandle);
+            glDeleteProgram(_programHandle);
             _programHandle = 0;
         }
 
@@ -220,6 +220,7 @@
 
     // Texture
     GLuint texture = 0;
+    glActiveTexture(GL_TEXTURE0);
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -227,9 +228,6 @@
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture);
 
     if (vertexShader)
     {
@@ -298,6 +296,9 @@
 
         glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        
         success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
     }
 

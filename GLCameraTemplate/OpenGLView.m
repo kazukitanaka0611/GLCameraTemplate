@@ -327,7 +327,7 @@
 }
 
 #pragma mark -
-- (BOOL)render:(const GLvoid*)ptr
+- (BOOL)render:(const GLvoid*)textureVertices
 {
     static const GLfloat squareVetrices[] = {
         -1.0f, -1.0f, 0.0f,

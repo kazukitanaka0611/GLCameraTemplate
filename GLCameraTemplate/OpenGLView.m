@@ -281,6 +281,9 @@
         size_t imageWidth = CGImageGetWidth(imageRef);
         size_t imageHeight = CGImageGetHeight(imageRef);
 
+        _frameWidth = imageWidth;
+        _frameHeight = imageHeight;
+
         self.contentScaleFactor = image.scale;
 
         glClearColor(0.0, 0.0, 0.0, 0.0);

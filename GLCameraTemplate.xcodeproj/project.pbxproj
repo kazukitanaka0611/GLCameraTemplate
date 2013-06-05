@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2F219D02175FDC2600202958 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219CFD175FDC2600202958 /* AppDelegate.m */; };
+		2F219D03175FDC2600202958 /* CameraFlashButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219CFF175FDC2600202958 /* CameraFlashButton.m */; };
+		2F219D04175FDC2600202958 /* CameraProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219D01175FDC2600202958 /* CameraProcessor.m */; };
+		2F219D0A175FDC5000202958 /* GLCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219D06175FDC5000202958 /* GLCameraViewController.m */; };
+		2F219D0B175FDC5000202958 /* PhotoPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219D09175FDC5000202958 /* PhotoPreviewViewController.m */; };
+		2F219D10175FDC5F00202958 /* VideoPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219D0D175FDC5F00202958 /* VideoPreviewViewController.m */; };
+		2F219D11175FDC5F00202958 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F219D0F175FDC5F00202958 /* VideoRecorder.m */; };
 		2F2346FC173DA58700F101B0 /* Camera@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F5173DA58700F101B0 /* Camera@2x.png */; };
 		2F2346FD173DA58700F101B0 /* CameraLarge@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F6173DA58700F101B0 /* CameraLarge@2x.png */; };
 		2F2346FE173DA58700F101B0 /* Handle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F7173DA58700F101B0 /* Handle@2x.png */; };
@@ -14,33 +21,41 @@
 		2F234700173DA58700F101B0 /* RecordOn@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346F9173DA58700F101B0 /* RecordOn@2x.png */; };
 		2F234701173DA58700F101B0 /* Toggle@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346FA173DA58700F101B0 /* Toggle@2x.png */; };
 		2F234702173DA58700F101B0 /* Video@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F2346FB173DA58700F101B0 /* Video@2x.png */; };
-		2F234705173DB94100F101B0 /* VideoPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F234704173DB94000F101B0 /* VideoPreviewViewController.m */; };
 		2F234707173DBBE200F101B0 /* Focus@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F234706173DBBE200F101B0 /* Focus@2x.png */; };
 		2F410704173071C300002BB2 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410703173071C300002BB2 /* UIKit.framework */; };
 		2F410706173071C300002BB2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410705173071C300002BB2 /* Foundation.framework */; };
 		2F410708173071C300002BB2 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F410707173071C300002BB2 /* CoreGraphics.framework */; };
 		2F41070E173071C300002BB2 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2F41070C173071C300002BB2 /* InfoPlist.strings */; };
 		2F410710173071C300002BB2 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F41070F173071C300002BB2 /* main.m */; };
-		2F410714173071C300002BB2 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F410713173071C300002BB2 /* AppDelegate.m */; };
 		2F410716173071C300002BB2 /* Default.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410715173071C300002BB2 /* Default.png */; };
 		2F410718173071C300002BB2 /* Default@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410717173071C300002BB2 /* Default@2x.png */; };
 		2F41071A173071C300002BB2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2F410719173071C300002BB2 /* Default-568h@2x.png */; };
-		2F410722173071E000002BB2 /* GLCameraViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F410721173071E000002BB2 /* GLCameraViewController.m */; };
 		2F4107241730723B00002BB2 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107231730723B00002BB2 /* OpenGLES.framework */; };
 		2F4107261730723F00002BB2 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107251730723F00002BB2 /* AVFoundation.framework */; };
 		2F4107281730724500002BB2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107271730724500002BB2 /* CoreMedia.framework */; };
 		2F41072A1730724B00002BB2 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F4107291730724B00002BB2 /* CoreVideo.framework */; };
 		2F41072C1730725000002BB2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F41072B1730725000002BB2 /* QuartzCore.framework */; };
 		2F41072F1730733A00002BB2 /* OpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F41072E1730733A00002BB2 /* OpenGLView.m */; };
-		2F618C581733A519002F3903 /* CameraProcessor.m in Sources */ = {isa = PBXBuildFile; fileRef = 2F618C571733A519002F3903 /* CameraProcessor.m */; };
 		2FB4203C1733D66E009C4026 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FB4203B1733D66E009C4026 /* AudioToolbox.framework */; };
-		2FB4203F1733D7AF009C4026 /* PhotoPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FB4203E1733D7AF009C4026 /* PhotoPreviewViewController.m */; };
-		2FB8EE07173B0AB300B83F87 /* CameraFlashButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */; };
 		2FEEEBE7173465AE00AA0A54 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FEEEBE6173465AE00AA0A54 /* AssetsLibrary.framework */; };
-		2FEEEBEA17346BB800AA0A54 /* VideoRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = 2FEEEBE917346BB800AA0A54 /* VideoRecorder.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2F219CFC175FDC2600202958 /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		2F219CFD175FDC2600202958 /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		2F219CFE175FDC2600202958 /* CameraFlashButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFlashButton.h; sourceTree = "<group>"; };
+		2F219CFF175FDC2600202958 /* CameraFlashButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFlashButton.m; sourceTree = "<group>"; };
+		2F219D00175FDC2600202958 /* CameraProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraProcessor.h; sourceTree = "<group>"; };
+		2F219D01175FDC2600202958 /* CameraProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraProcessor.m; sourceTree = "<group>"; };
+		2F219D05175FDC5000202958 /* GLCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLCameraViewController.h; sourceTree = "<group>"; };
+		2F219D06175FDC5000202958 /* GLCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLCameraViewController.m; sourceTree = "<group>"; };
+		2F219D07175FDC5000202958 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
+		2F219D08175FDC5000202958 /* PhotoPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewViewController.h; sourceTree = "<group>"; };
+		2F219D09175FDC5000202958 /* PhotoPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewViewController.m; sourceTree = "<group>"; };
+		2F219D0C175FDC5F00202958 /* VideoPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPreviewViewController.h; sourceTree = "<group>"; };
+		2F219D0D175FDC5F00202958 /* VideoPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPreviewViewController.m; sourceTree = "<group>"; };
+		2F219D0E175FDC5F00202958 /* VideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRecorder.h; sourceTree = "<group>"; };
+		2F219D0F175FDC5F00202958 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 		2F2346F5173DA58700F101B0 /* Camera@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Camera@2x.png"; sourceTree = "<group>"; };
 		2F2346F6173DA58700F101B0 /* CameraLarge@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "CameraLarge@2x.png"; sourceTree = "<group>"; };
 		2F2346F7173DA58700F101B0 /* Handle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Handle@2x.png"; sourceTree = "<group>"; };
@@ -48,8 +63,6 @@
 		2F2346F9173DA58700F101B0 /* RecordOn@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "RecordOn@2x.png"; sourceTree = "<group>"; };
 		2F2346FA173DA58700F101B0 /* Toggle@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Toggle@2x.png"; sourceTree = "<group>"; };
 		2F2346FB173DA58700F101B0 /* Video@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Video@2x.png"; sourceTree = "<group>"; };
-		2F234703173DB94000F101B0 /* VideoPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoPreviewViewController.h; sourceTree = "<group>"; };
-		2F234704173DB94000F101B0 /* VideoPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoPreviewViewController.m; sourceTree = "<group>"; };
 		2F234706173DBBE200F101B0 /* Focus@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Focus@2x.png"; sourceTree = "<group>"; };
 		2F410700173071C300002BB2 /* GLCameraTemplate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GLCameraTemplate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2F410703173071C300002BB2 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
@@ -59,30 +72,17 @@
 		2F41070D173071C300002BB2 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		2F41070F173071C300002BB2 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		2F410711173071C300002BB2 /* GLCameraTemplate-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "GLCameraTemplate-Prefix.pch"; sourceTree = "<group>"; };
-		2F410712173071C300002BB2 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
-		2F410713173071C300002BB2 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2F410715173071C300002BB2 /* Default.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Default.png; sourceTree = "<group>"; };
 		2F410717173071C300002BB2 /* Default@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default@2x.png"; sourceTree = "<group>"; };
 		2F410719173071C300002BB2 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
-		2F410720173071E000002BB2 /* GLCameraViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLCameraViewController.h; sourceTree = "<group>"; };
-		2F410721173071E000002BB2 /* GLCameraViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GLCameraViewController.m; sourceTree = "<group>"; };
 		2F4107231730723B00002BB2 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		2F4107251730723F00002BB2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		2F4107271730724500002BB2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		2F4107291730724B00002BB2 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		2F41072B1730725000002BB2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
-		2F41072D1730733A00002BB2 /* OpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OpenGLView.h; sourceTree = "<group>"; };
 		2F41072E1730733A00002BB2 /* OpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OpenGLView.m; sourceTree = "<group>"; };
-		2F618C561733A519002F3903 /* CameraProcessor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraProcessor.h; sourceTree = "<group>"; };
-		2F618C571733A519002F3903 /* CameraProcessor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraProcessor.m; sourceTree = "<group>"; };
 		2FB4203B1733D66E009C4026 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		2FB4203D1733D7AF009C4026 /* PhotoPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoPreviewViewController.h; sourceTree = "<group>"; };
-		2FB4203E1733D7AF009C4026 /* PhotoPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoPreviewViewController.m; sourceTree = "<group>"; };
-		2FB8EE05173B0AB300B83F87 /* CameraFlashButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraFlashButton.h; sourceTree = "<group>"; };
-		2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CameraFlashButton.m; sourceTree = "<group>"; };
 		2FEEEBE6173465AE00AA0A54 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
-		2FEEEBE817346BB800AA0A54 /* VideoRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VideoRecorder.h; sourceTree = "<group>"; };
-		2FEEEBE917346BB800AA0A54 /* VideoRecorder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VideoRecorder.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,22 +143,22 @@
 		2F410709173071C300002BB2 /* GLCameraTemplate */ = {
 			isa = PBXGroup;
 			children = (
-				2F410712173071C300002BB2 /* AppDelegate.h */,
-				2F410713173071C300002BB2 /* AppDelegate.m */,
-				2F410720173071E000002BB2 /* GLCameraViewController.h */,
-				2F410721173071E000002BB2 /* GLCameraViewController.m */,
-				2FB4203D1733D7AF009C4026 /* PhotoPreviewViewController.h */,
-				2FB4203E1733D7AF009C4026 /* PhotoPreviewViewController.m */,
-				2F234703173DB94000F101B0 /* VideoPreviewViewController.h */,
-				2F234704173DB94000F101B0 /* VideoPreviewViewController.m */,
-				2FB8EE05173B0AB300B83F87 /* CameraFlashButton.h */,
-				2FB8EE06173B0AB300B83F87 /* CameraFlashButton.m */,
-				2F41072D1730733A00002BB2 /* OpenGLView.h */,
+				2F219CFC175FDC2600202958 /* AppDelegate.h */,
+				2F219CFD175FDC2600202958 /* AppDelegate.m */,
+				2F219D05175FDC5000202958 /* GLCameraViewController.h */,
+				2F219D06175FDC5000202958 /* GLCameraViewController.m */,
+				2F219D08175FDC5000202958 /* PhotoPreviewViewController.h */,
+				2F219D09175FDC5000202958 /* PhotoPreviewViewController.m */,
+				2F219D0C175FDC5F00202958 /* VideoPreviewViewController.h */,
+				2F219D0D175FDC5F00202958 /* VideoPreviewViewController.m */,
+				2F219CFE175FDC2600202958 /* CameraFlashButton.h */,
+				2F219CFF175FDC2600202958 /* CameraFlashButton.m */,
+				2F219D07175FDC5000202958 /* OpenGLView.h */,
 				2F41072E1730733A00002BB2 /* OpenGLView.m */,
-				2F618C561733A519002F3903 /* CameraProcessor.h */,
-				2F618C571733A519002F3903 /* CameraProcessor.m */,
-				2FEEEBE817346BB800AA0A54 /* VideoRecorder.h */,
-				2FEEEBE917346BB800AA0A54 /* VideoRecorder.m */,
+				2F219D0E175FDC5F00202958 /* VideoRecorder.h */,
+				2F219D0F175FDC5F00202958 /* VideoRecorder.m */,
+				2F219D00175FDC2600202958 /* CameraProcessor.h */,
+				2F219D01175FDC2600202958 /* CameraProcessor.m */,
 				2F41070A173071C300002BB2 /* Supporting Files */,
 			);
 			path = GLCameraTemplate;
@@ -276,14 +276,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				2F410710173071C300002BB2 /* main.m in Sources */,
-				2F410714173071C300002BB2 /* AppDelegate.m in Sources */,
-				2F410722173071E000002BB2 /* GLCameraViewController.m in Sources */,
 				2F41072F1730733A00002BB2 /* OpenGLView.m in Sources */,
-				2F618C581733A519002F3903 /* CameraProcessor.m in Sources */,
-				2FB4203F1733D7AF009C4026 /* PhotoPreviewViewController.m in Sources */,
-				2FEEEBEA17346BB800AA0A54 /* VideoRecorder.m in Sources */,
-				2FB8EE07173B0AB300B83F87 /* CameraFlashButton.m in Sources */,
-				2F234705173DB94100F101B0 /* VideoPreviewViewController.m in Sources */,
+				2F219D02175FDC2600202958 /* AppDelegate.m in Sources */,
+				2F219D03175FDC2600202958 /* CameraFlashButton.m in Sources */,
+				2F219D04175FDC2600202958 /* CameraProcessor.m in Sources */,
+				2F219D0A175FDC5000202958 /* GLCameraViewController.m in Sources */,
+				2F219D0B175FDC5000202958 /* PhotoPreviewViewController.m in Sources */,
+				2F219D10175FDC5F00202958 /* VideoPreviewViewController.m in Sources */,
+				2F219D11175FDC5F00202958 /* VideoRecorder.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

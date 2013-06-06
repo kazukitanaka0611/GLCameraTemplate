@@ -281,16 +281,11 @@
         size_t imageWidth = CGImageGetWidth(imageRef);
         size_t imageHeight = CGImageGetHeight(imageRef);
 
-<<<<<<< HEAD
         _frameWidth = imageWidth;
         _frameHeight = imageHeight;
 
         self.contentScaleFactor = image.scale;
 
-=======
-        self.contentScaleFactor = image.scale;
-
->>>>>>> a5568ad... drawImage method add
         glClearColor(0.0, 0.0, 0.0, 0.0);
         glClear(GL_COLOR_BUFFER_BIT);
 
@@ -300,7 +295,6 @@
 
         size_t imageTotalBytes = imageBytesPerRow * imageHeight;
         Byte* imageData = (Byte*)malloc(imageTotalBytes);
-<<<<<<< HEAD
 
         memset(imageData, 0, imageTotalBytes);
 
@@ -312,19 +306,6 @@
                                                         imageColorSpace,
                                                         kCGImageAlphaPremultipliedLast);
 
-=======
-
-        memset(imageData, 0, imageTotalBytes);
-
-        CGContextRef memContext = CGBitmapContextCreate(imageData,
-                                                        imageWidth,
-                                                        imageHeight,
-                                                        imageBitsPerComponent,
-                                                        imageBytesPerRow,
-                                                        imageColorSpace,
-                                                        kCGImageAlphaPremultipliedLast);
-
->>>>>>> a5568ad... drawImage method add
         CGContextDrawImage(memContext,
                            CGRectMake(0.0f, 0.0f, (CGFloat)imageWidth, (CGFloat)imageHeight), imageRef);
 
@@ -349,11 +330,7 @@
 }
 
 #pragma mark -
-<<<<<<< HEAD
 - (BOOL)render:(const GLvoid*)textureVertices
-=======
-- (BOOL)render:(const GLvoid*)ptr
->>>>>>> a5568ad... drawImage method add
 {
     static const GLfloat squareVetrices[] = {
         -1.0f, -1.0f, 0.0f,

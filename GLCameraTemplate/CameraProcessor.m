@@ -148,12 +148,47 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
             mediaType = AVMediaTypeAudio;
         }
 
+        if (mediaType == AVMediaTypeVideo)
+        {
+            [self makeOriginalCaptureImage:sampleBuffer];
+        }
+        
         if ([self.delegate respondsToSelector:@selector(processCameraFrame:mediaType:)])
         {
             [self.delegate processCameraFrame:sampleBuffer mediaType:mediaType];
         }
 
     });
+}
+
+#pragma mark -
+- (void)makeOriginalCaptureImage:(CMSampleBufferRef)sampleBuffer
+{
+    CVImageBufferRef buffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+
+    CVPixelBufferLockBaseAddress(buffer, 0);
+
+    uint8_t *base = CVPixelBufferGetBaseAddress(buffer);
+    CGFloat width = CVPixelBufferGetWidth(buffer);
+    CGFloat height = CVPixelBufferGetHeight(buffer);
+    CGFloat bytesPerRow = CVPixelBufferGetBytesPerRow(buffer);
+
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    CGContextRef cgContext = CGBitmapContextCreate(
+                                                   base, width , height , 8,
+                                                   bytesPerRow, colorSpace ,
+                                                   kCGBitmapByteOrder32Little | kCGImageAlphaPremultipliedFirst);
+    CGColorSpaceRelease(colorSpace);
+
+    CGImageRef cgImage = CGBitmapContextCreateImage(cgContext);
+
+    _originalCaptureImage = [UIImage imageWithCGImage:cgImage scale:1.0f
+                                          orientation:UIImageOrientationRight];
+
+    CGImageRelease(cgImage);
+    CGContextRelease(cgContext);
+
+    CVPixelBufferUnlockBaseAddress(buffer, 0);
 }
 
 #pragma mark -

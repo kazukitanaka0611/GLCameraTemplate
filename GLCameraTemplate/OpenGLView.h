@@ -28,4 +28,7 @@
 @property (nonatomic, assign) BOOL isMirrored;
 @property (nonatomic, readonly) GLuint programHandle;
 
+@property (nonatomic, assign) GLint frameWidth;
+@property (nonatomic, assign) GLint frameHeight;
+
 @end

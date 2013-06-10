@@ -16,9 +16,6 @@
 
 @property (nonatomic, strong) EAGLContext *context;
 
-@property (nonatomic, assign) GLint frameWidth;
-@property (nonatomic, assign) GLint frameHeight;
-
 @property (nonatomic, assign) GLubyte *rawImageData;
 @property (nonatomic, assign) unsigned bufferRowBytes;
 

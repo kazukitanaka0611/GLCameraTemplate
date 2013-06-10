@@ -27,5 +27,6 @@
 @property (nonatomic, readonly) BOOL hasFlash;
 @property (nonatomic, readonly) BOOL isFrontCamera;
 @property (nonatomic, readonly) AVCaptureSession *captureSession;
+@property (nonatomic, readonly) UIImage *originalCaptureImage;
 
 @end

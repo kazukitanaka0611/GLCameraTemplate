@@ -182,7 +182,7 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
     CGImageRef cgImage = CGBitmapContextCreateImage(cgContext);
 
-    _originalCaptureImage = [UIImage imageWithCGImage:cgImage scale:1.0f
+    _originalCaptureImage = [UIImage imageWithCGImage:cgImage scale:(1.0 / [UIScreen mainScreen].scale)
                                           orientation:UIImageOrientationRight];
 
     CGImageRelease(cgImage);

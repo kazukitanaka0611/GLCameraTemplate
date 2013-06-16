@@ -64,14 +64,12 @@
     {
         [self.assertWriter addInput:self.audioWriter];
     }
-
-    CGFloat scale = [[UIScreen mainScreen] scale];
     
     // Video Writer
     NSDictionary *videoWriterSetting = @{
                                         AVVideoCodecKey : AVVideoCodecH264,
-                                        AVVideoWidthKey : @(frame.size.width * scale),
-                                        AVVideoHeightKey : @(frame.size.height * scale)
+                                        AVVideoWidthKey : @(frame.size.width),
+                                        AVVideoHeightKey : @(frame.size.height)
                                       };
 
     self.videoWriter = [AVAssetWriterInput assetWriterInputWithMediaType:AVMediaTypeVideo
@@ -86,9 +84,9 @@
     // AVAssetWriterInputPixelBufferAdaptor
     NSDictionary *pixelBufferAttributes = @{
                                                 (NSString *)kCVPixelBufferPixelFormatTypeKey : @(kCVPixelFormatType_32BGRA),
-                                                (NSString *)kCVPixelBufferWidthKey : @(frame.size.width * scale),
-                                                (NSString *)kCVPixelBufferHeightKey : @(frame.size.height * scale),
-                                                (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @((frame.size.width * scale) * 4)
+                                                (NSString *)kCVPixelBufferWidthKey : @(frame.size.width),
+                                                (NSString *)kCVPixelBufferHeightKey : @(frame.size.height),
+                                                (NSString *)kCVPixelBufferBytesPerRowAlignmentKey : @((frame.size.width) * 4)
                                             };
     
     _adaptor = [[AVAssetWriterInputPixelBufferAdaptor alloc] initWithAssetWriterInput:self.videoWriter

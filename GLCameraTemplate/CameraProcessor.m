@@ -182,8 +182,25 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
 
     CGImageRef cgImage = CGBitmapContextCreateImage(cgContext);
 
+    UIImageOrientation imageOrientation = UIImageOrientationRight;
+
+    switch([UIDevice currentDevice].orientation)
+    {
+        case UIDeviceOrientationLandscapeLeft:
+            imageOrientation = UIImageOrientationUp;
+            break;
+        case UIDeviceOrientationLandscapeRight:
+            imageOrientation = UIImageOrientationDown;
+            break;
+        case UIDeviceOrientationFaceDown:
+            imageOrientation = UIImageOrientationRight;
+            break;
+        default:
+            break;
+    }
+
     _originalCaptureImage = [UIImage imageWithCGImage:cgImage scale:(1.0 / [UIScreen mainScreen].scale)
-                                          orientation:UIImageOrientationRight];
+                                          orientation:imageOrientation];
 
     CGImageRelease(cgImage);
     CGContextRelease(cgContext);

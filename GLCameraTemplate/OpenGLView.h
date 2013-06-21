@@ -14,6 +14,7 @@
 #define STRINGIZE2(x) STRINGIZE(x)
 #define SHADER_STRING(text) @ STRINGIZE2(text)
 
+- (id)initWithFrame:(CGRect)frame scale:(BOOL)isScale;
 - (BOOL)drawFrame:(CVImageBufferRef)cameraFrame;
 - (BOOL)drawImage:(UIImage *)image;
 - (UIImage *)convertUIImage;

@@ -35,13 +35,26 @@
 #pragma mark -
 - (id)initWithFrame:(CGRect)frame
 {
+    return [self initWithFrame:frame scale:NO];
+}
+
+#pragma mark -
+- (id)initWithFrame:(CGRect)frame scale:(BOOL)isScale
+{
     self = [super initWithFrame:frame];
     if (self) {
         // Initialization code
 
         if ([self respondsToSelector:@selector(setContentScaleFactor:)])
         {
-            self.contentScaleFactor = [[UIScreen mainScreen] scale];
+            if (isScale)
+            {
+                 self.contentScaleFactor = 1.0;
+            }
+            else
+            {
+                self.contentScaleFactor = [[UIScreen mainScreen] scale];
+            }
         }
         
         CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;

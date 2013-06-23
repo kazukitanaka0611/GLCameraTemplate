@@ -295,7 +295,7 @@
         size_t imageHeight = CGImageGetHeight(imageRef);
 
         _frameWidth = imageWidth;
-        _frameHeight = imageHeight;
+        _frameHeight = imageHeight / 2;
 
         self.contentScaleFactor = image.scale;
 

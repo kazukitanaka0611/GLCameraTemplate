@@ -25,7 +25,7 @@
 - (void)startRecording:(CGRect)frame
 {
     // Movie URL
-    self.movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@,%@",NSTemporaryDirectory(), @"sample.mov"]];
+    self.movieURL = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@,%@",NSTemporaryDirectory(), @"sample.MOV"]];
 
     NSFileManager *fileManger = [NSFileManager defaultManager];
     NSString *filePath = self.movieURL.path;

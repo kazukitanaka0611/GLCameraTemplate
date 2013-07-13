@@ -294,9 +294,6 @@
         size_t imageWidth = CGImageGetWidth(imageRef);
         size_t imageHeight = CGImageGetHeight(imageRef);
 
-        _frameWidth = imageWidth;
-        _frameHeight = imageHeight / 2;
-
         self.contentScaleFactor = image.scale;
 
         glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -357,7 +354,7 @@
     glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
     [self setUniform];
 
-    glViewport(0, 0, _frameWidth, _frameHeight);
+    glViewport(0, 0, 320, 320);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
     glEnableVertexAttribArray(0);

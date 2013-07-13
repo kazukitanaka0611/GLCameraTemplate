@@ -354,7 +354,7 @@
     glUniform1f(glGetUniformLocation(_programHandle, "mirror"), self.isMirrored ? -1.0f : 1.0f);
     [self setUniform];
 
-    glViewport(0, 0, 320, 320);
+    glViewport(0, 0, _frameWidth, _frameHeight);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, squareVetrices);
     glEnableVertexAttribArray(0);
